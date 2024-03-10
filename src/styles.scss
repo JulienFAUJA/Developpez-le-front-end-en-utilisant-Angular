@@ -1,5 +1,7 @@
 $vert_turquoise: rgb(4, 131, 143);
+$vert_turquoise_darken30: darken(rgb(4, 131, 143), 30);
 $border_vert_turquoise: 2px solid $vert_turquoise;
+$border_vert_turquoise_btn: 1px solid $vert_turquoise_darken30;
 $border_radius1: 5px;
 $block_padding: 5px;
 
@@ -7,6 +9,15 @@ $block_padding: 5px;
 @mixin titleBlockStyle {
   background-color: $vert_turquoise;
   border: $border_vert_turquoise;
+  border-radius: $border_radius1;
+  padding: $block_padding;
+  color: white;
+  font-size: large;
+}
+
+@mixin btnStyle {
+  background-color: $vert_turquoise;
+  border: $border_vert_turquoise_btn;
   border-radius: $border_radius1;
   padding: $block_padding;
   color: white;
@@ -23,7 +34,6 @@ $block_padding: 5px;
   display: flexbox;
   margin: 0 auto;
   width: fit-content;
-  
 }
 .title {
   @include titleBlockStyle;
@@ -46,4 +56,7 @@ $block_padding: 5px;
   color: #000;
   text-align: center;
   font-weight: bolder;
+}
+.btn {
+  @include btnStyle;
 }
