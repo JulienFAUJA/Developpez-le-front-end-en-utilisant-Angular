@@ -10,6 +10,7 @@ import Chart from 'chart.js/auto';
 import annotationPlugin from 'chartjs-plugin-annotation';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { getChartLabelPlugin, PLUGIN_ID } from 'chart.js-plugin-labels-dv';
+import { Router } from '@angular/router';
 
 Chart.register(annotationPlugin);
 Chart.register(ChartDataLabels);
@@ -26,39 +27,43 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
   public chart: any;
   public font_size: number = 22;
   public colors: string[] = [
-    'rgb(120, 20, 60)',
-    'rgb(170, 170, 250)',
-    'rgb(160, 100, 255)',
-    'rgb(180, 180, 255)',
-    'rgb(160, 160, 255)',
+    'rgb(149, 96, 101)',
+    'rgb(184, 203, 231)',
+   
+    'rgb(137, 161, 219)',
+    
+    'rgb(121, 61, 82)',
+    'rgb(151, 128, 161)',
   ];
   @Input() countryData: { country: string; medals: number }[] = [];
 
-  constructor() {}
+  constructor(private router: Router) { }
 
   private hasRegisteredPlugin(): boolean {
     return !!Chart.registry?.plugins.get(PLUGIN_ID);
   }
 
+  goOn(countryName:string) {
+    return this.router;//.navigateByUrl('detail');
+}
+
   createChart() {
-
-    if (!this.hasRegisteredPlugin()) {
-      Chart.register(getChartLabelPlugin());
-    }
-
+   
+    const self = this;
     this.chart = new Chart('MyChart', {
-      
       type: 'pie',
-
+      
       data: {
         labels: this.countryData.map((data) => data.country),
+
 
         datasets: [
           {
             data: this.countryData.map((data) => data.medals),
-            backgroundColor: this.colors,
-            hoverOffset: 1,
-          
+            backgroundColor: this.colors, 
+            borderColor:this.colors,
+            hoverOffset:0,
+            
           },
         ],
       },
@@ -67,17 +72,20 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
       options: {
         responsive: true,
         aspectRatio: 2.5,
+        
         plugins: {
           datalabels: {
             formatter: function (value, context) {
+              console.log(context.chart.data.labels?.at(context.dataIndex));
               return '' + context.chart.data.labels?.at(context.dataIndex);
             },
             listeners: {
               click: function (context, event) {
                 // Receives `click` events only for labels of the first dataset.
                 // The clicked label index is available in `context.dataIndex`.
+                const country_name = context.chart.data.labels?.at(context.dataIndex);
                 console.log(
-                  'label ' + context.dataIndex + ' has been clicked!'
+                  'label ' + country_name + ' has been clicked!'
                 );
                 console.log(
                   'mouse is at position x:',
@@ -85,30 +93,36 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
                   'and y:',
                   event.y
                 );
+                self.router.navigateByUrl('/detail/'+context.dataIndex);
               },
+              enter: function(context, event) {
+                // Receives `enter` events for any labels of any dataset. Indices of the
+                // clicked label are: `context.datasetIndex` and `context.dataIndex`.
+                // For example, we can modify keep track of the hovered state and
+                // return `true` to update the label and re-render the chart.
+                context.active=true;
+                
+                return context.active;
+              },
+              
             },
-            
-            
+
             offset: function (context) {
               const data_index = context.dataIndex;
-              if (data_index <2) {
+              if (data_index < 2) {
                 return -10;
-              }
-              else if (data_index == 2) {
+              } else if (data_index == 2) {
                 return 130;
-              
               } else {
                 return 30;
               }
             },
             align: function (context) {
               const data_index = context.dataIndex;
-              if (data_index <2) {
+              if (data_index < 2) {
                 return 'right';
-              }
-              else if (data_index == 2) {
+              } else if (data_index == 2) {
                 return -45;
-              
               } else {
                 return 'left';
               }
@@ -122,58 +136,50 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
             },
             padding: function (context) {
               const data_index = context.dataIndex;
-              if (data_index==0) {
+              if (data_index == 0) {
                 return {
-                  left:220,
-                  top:10,
-                  right:15,
-                  bottom:-40
+                  left: 220,
+                  top: 10,
+                  right: 15,
+                  bottom: -40,
                 };
-              }
-              else if (data_index==1) {
-                return  {
-                  left:110,
-                  top:20,
-                  right:100,
-                  bottom:-10
+              } else if (data_index == 1) {
+                return {
+                  left: 110,
+                  top: 20,
+                  right: 100,
+                  bottom: -10,
                 };
-              
               } else if (data_index == 2) {
-                return  {
-                  left:120,
-                  top:0,
-                  right:160,
-                  bottom:0
+                return {
+                  left: 120,
+                  top: 0,
+                  right: 160,
+                  bottom: 0,
                 };
-              
-              } 
-              else if (data_index == 3) {
-                return  {
-                  left:200,
-                  top:0,
-                  right:90,
-                  bottom:0
+              } else if (data_index == 3) {
+                return {
+                  left: 200,
+                  top: 0,
+                  right: 90,
+                  bottom: 0,
                 };
-              
-              } 
-              else if (data_index == 4) {
-                return  {
-                  left:240,
-                  top:100,
-                  right:50,
-                  bottom:0
+              } else if (data_index == 4) {
+                return {
+                  left: 240,
+                  top: 100,
+                  right: 50,
+                  bottom: 0,
                 };
-              
               } else {
-                return  {
-                  left:200,
-                  top:20,
-                  right:100,
-                  bottom:-10
+                return {
+                  left: 200,
+                  top: 20,
+                  right: 100,
+                  bottom: -10,
                 };
               }
             },
-            
           },
 
           legend: {
@@ -218,15 +224,12 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
                 font: {
                   size: this.font_size,
                 },
-                
+
                 callout: {
                   display: true,
-                  borderColor:this.colors[0],
+                  borderColor: this.colors[0],
                   side: 110,
-                  borderWidth:6,
-                  
-                  
-                 
+                  borderWidth: 6,
                 },
               },
               label2: {
@@ -240,15 +243,13 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
                 font: {
                   size: this.font_size,
                 },
-                
+
                 callout: {
                   display: true,
-                  borderColor:this.colors[1],
+                  borderColor: this.colors[1],
                   side: 120,
-                  borderWidth:6,
-                  borderJoinStyle:'round',
-                  
-                 
+                  borderWidth: 6,
+                  borderJoinStyle: 'round',
                 },
               },
               label3: {
@@ -264,9 +265,9 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
                 },
                 callout: {
                   display: true,
-                  borderColor:this.colors[2],
+                  borderColor: this.colors[2],
                   side: 120,
-                  borderWidth:6,
+                  borderWidth: 6,
                 },
               },
 
@@ -283,9 +284,9 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
                 },
                 callout: {
                   display: true,
-                  borderColor:this.colors[4],
+                  borderColor: this.colors[4],
                   side: 180,
-                  borderWidth:6,
+                  borderWidth: 6,
                 },
               },
               label5: {
@@ -301,9 +302,9 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
                 },
                 callout: {
                   display: true,
-                  borderColor:this.colors[3],
+                  borderColor: this.colors[3],
                   side: 10,
-                  borderWidth:6,
+                  borderWidth: 6,
                 },
               },
             },
@@ -311,108 +312,10 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
         },
       },
     });
+    
   }
 
-  /*
 
-  label1: {
-                type: 'label',
-                xValue: 100,
-                xAdjust: 200,
-                yValue: 0,
-                yAdjust: -170,
-                backgroundColor: 'rgba(255,255,255, 0)',
-                content: [this.countryData.map((data) => data.country)[0]],
-                font: {
-                  size: this.font_size,
-                },
-                
-                callout: {
-                  display: true,
-                  borderColor:this.colors[0],
-                  side: 120,
-                  borderWidth:5,
-                  borderJoinStyle:'round',
-                  
-                 
-                },
-              },
-              label2: {
-                type: 'label',
-                xValue: 100,
-                xAdjust: 290,
-                yValue: 10,
-                yAdjust: -90,
-                backgroundColor: 'rgba(255,255,255, 0)',
-                content: [this.countryData.map((data) => data.country)[1]],
-                font: {
-                  size: this.font_size,
-                },
-                callout: {
-                  display: true,
-                  borderColor:this.colors[1],
-                  side: 120,
-                  borderWidth:5,
-                },
-              },
-
-              label3: {
-                type: 'label',
-                xValue: 200,
-                xAdjust: 300,
-                yValue: 10,
-                yAdjust: 150,
-                backgroundColor: 'rgba(255,255,255, 0)',
-                content: [this.countryData.map((data) => data.country)[2]],
-                font: {
-                  size: this.font_size,
-                },
-                callout: {
-                  display: true,
-                  borderColor:this.colors[2],
-                  side: 120,
-                  borderWidth:5,
-                },
-              },
-
-              label4: {
-                type: 'label',
-                xValue: 100,
-                xAdjust: -250,
-                yValue: 10,
-                yAdjust: -150,
-                backgroundColor: 'rgba(255,255,255, 0)',
-                content: [this.countryData.map((data) => data.country)[4]],
-                font: {
-                  size: this.font_size,
-                },
-                callout: {
-                  display: true,
-                  borderColor:this.colors[4],
-                  side: 100,
-                  borderWidth:5,
-                },
-              },
-              label5: {
-                type: 'label',
-                xValue: 100,
-                xAdjust: -300,
-                yValue: 10,
-                yAdjust: -10,
-                backgroundColor: 'rgba(255,255,255, 0)',
-                content: [this.countryData.map((data) => data.country)[3]],
-                font: {
-                  size: this.font_size,
-                },
-                callout: {
-                  display: true,
-                  borderColor:this.colors[3],
-                  side: 50,
-                  borderWidth:5,
-                },
-              },
-
-  */
 
   ngOnInit(): void {
     console.log(

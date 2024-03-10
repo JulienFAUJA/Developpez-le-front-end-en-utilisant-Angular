@@ -10,7 +10,7 @@ const routes: Routes = [
     component: HomeComponent,
   },
   {
-    path: 'detail', // wildcard
+    path: 'detail/:id', // wildcard
     component: DetailComponent,
   },
   {

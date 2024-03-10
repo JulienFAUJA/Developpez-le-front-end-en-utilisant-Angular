@@ -6,6 +6,7 @@ import {
   OnInit,
   SimpleChanges,
 } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import Chart from 'chart.js/auto';
 import annotationPlugin from 'chartjs-plugin-annotation';
 import { Observable, of } from 'rxjs';
@@ -23,7 +24,9 @@ export class DetailComponent implements OnInit, OnChanges, OnDestroy {
   public chart: any;
   public font_size: number = 22;
   countryName!: string;
+  country!:Olympic;
   totalNumberOfMedals!: number;
+  numberOfParticipations!: number;
   totalNumberOfAthletes!: number;
   public olympics$: Observable<any> = of(null);
 
@@ -37,13 +40,7 @@ export class DetailComponent implements OnInit, OnChanges, OnDestroy {
         datasets: [
           {
             data: [250, 400, 200, 405, 220, 180],
-            backgroundColor: [
-              'rgb(120, 20, 60)',
-              'rgb(170, 170, 250)',
-              'rgb(160, 100, 255)',
-              'rgb(180, 180, 255)',
-              'rgb(160, 160, 255)',
-            ],
+            
           },
         ],
       },
@@ -113,35 +110,31 @@ export class DetailComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  constructor(private olympicService: OlympicService) {}
+  constructor(private olympicService: OlympicService, private route: ActivatedRoute) {}
 
-  get_data() {
-    /*
+  get_data(countryId:number) {
+    
     this.olympicService.getOlympics().subscribe((data: Olympic[]) => {
      
      
-      this.listOfCountries = data.map((country) => country.country); // Liste des pays
-    
-      // Pour le nombre total de JO, on doit compter toutes les participations uniques
-      this.totalJO = new Set(
-        data.flatMap((country) => country.participations.map((participation) => participation.year))
-      ).size;
+      this.country = data[countryId];
+      this.countryName=this.country.country;
+      this.numberOfParticipations = new Set(this.country.participations.map((participation) => participation.year)).size;
     
       // Création d'un attribut pour chaque pays avec la somme totale de ses médailles
-      this.totalMedalsByCountry = data.map((country) => ({
-        country: country.country,
-        medals: country.participations.reduce((sum, participation) => sum + participation.medalsCount, 0)
-      }));
+      this.totalNumberOfMedals = this.country.participations.reduce((sum, participation) => sum + participation.medalsCount, 0);
+      this.totalNumberOfAthletes = this.country.participations.reduce((sum, participation) => sum + participation.athleteCount, 0);
     
-      console.log(`Nombre de pays: ${this.numberOfCountries}`);
-      console.log(`Liste des pays: ${this.listOfCountries}`);
-      console.log(`Nombre total de JO: ${this.totalJO}`);
-      console.log(`Total des médailles par pays:`, this.totalMedalsByCountry);
+      console.log(`Nom du pays: ${this.countryName}`);
+      console.log(`Nombre de participations aux JO: ${this.numberOfParticipations}`);
+      console.log(`Total des médailles du pays:`, this.totalNumberOfMedals);
+      console.log(`Total des athlètes du pays:`, this.totalNumberOfAthletes);
     });
-    */
+    
   }
   ngOnInit() {
-    this.get_data();
+    const countryId = +this.route.snapshot.params['id'];
+    this.get_data(countryId);
   }
 
   ngOnDestroy(): void {

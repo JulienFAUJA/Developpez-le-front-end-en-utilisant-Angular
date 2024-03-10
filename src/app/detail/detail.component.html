@@ -1,23 +1,31 @@
-<a class="btn retour_btn" href="">Retour</a>
+<a class="btn retour_btn" routerLink="">Retour</a>
 <hr />
 <div class="container">
-    <div class="title">Medals per Country</div>
+    <div class="title">{{countryName}}</div>
     <div class="header_blocks">
         <aside class="header_block">
             <div class="header_title">
-                Number of JOs
+                Number of entries
             </div>
             <div class="header_value">
-               pays
+               {{numberOfParticipations}}
             </div>
         </aside>
     
         <aside class="header_block">
             <div class="header_title">
-                Number of countries
+                Total number medals
             </div>
             <div class="header_value">
-               2
+               {{totalNumberOfMedals}}
+            </div>
+        </aside>
+        <aside class="header_block">
+            <div class="header_title">
+                Total number of athletes
+            </div>
+            <div class="header_value">
+               {{totalNumberOfAthletes}}
             </div>
         </aside>
     </div>
