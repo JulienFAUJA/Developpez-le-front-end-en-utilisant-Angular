@@ -1,3 +1,94 @@
 <h2>Olympic games app</h2>
 <hr />
-<p>{{ (olympics$ | async)?.length }} data loaded</p>
+<div class="container">
+  <div class="title">Medals per Country</div>
+  <div class="header_blocks">
+    <aside class="header_block">
+      <div class="header_title">Number of JOs</div>
+      <div class="header_value">
+        {{ totalJO }}
+      </div>
+    </aside>
+
+    <aside class="header_block">
+      <div class="header_title">Number of countries</div>
+      <div class="header_value">
+        {{ numberOfCountries }}
+      </div>
+    </aside>
+  </div>
+
+  <div class="chart">
+    <!-- <app-pie-chart></app-pie-chart> -->
+    <!-- Autre HTML -->
+
+    <app-pie-chart [countryData]="totalMedalsByCountry"></app-pie-chart>
+  </div>
+
+  <svg
+    width="200"
+    height="150"
+    viewBox="0 0 200 150"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <!-- Cercle bleu -->
+    <circle
+      cx="30"
+      cy="30"
+      r="22"
+      stroke="blue"
+      stroke-width="4"
+      fill="none"
+      class="circle-animation"
+    />
+    <!-- Cercle noir -->
+    <circle
+      cx="80"
+      cy="30"
+      r="22"
+      stroke="black"
+      stroke-width="4"
+      fill="none"
+      class="circle-animation"
+      style="animation-delay: 0.5s"
+    />
+    <!-- Cercle rouge -->
+    <circle
+      cx="130"
+      cy="30"
+      r="22"
+      stroke="red"
+      stroke-width="4"
+      fill="none"
+      class="circle-animation"
+      style="animation-delay: 1s"
+    />
+    <!-- Cercle jaune -->
+    <circle
+      cx="55"
+      cy="55"
+      r="22"
+      stroke="yellow"
+      stroke-width="4"
+      fill="none"
+      class="circle-animation"
+      style="animation-delay: 0.5s"
+    />
+    <!-- Cercle vert -->
+    <circle
+      cx="105"
+      cy="55"
+      r="22"
+      stroke="green"
+      stroke-width="4"
+      fill="none"
+      class="circle-animation"
+      style="animation-delay: 1s"
+    />
+  </svg>
+</div>
+
+<!--
+
+    {{ (olympics$ | async)?.length }}
+-->

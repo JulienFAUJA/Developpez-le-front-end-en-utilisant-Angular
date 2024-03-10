@@ -1,0 +1,18 @@
+.data_block {
+}
+
+.chart {
+  margin: 10% auto;
+}
+
+.circle-animation {
+  stroke-dasharray: 139; /* Approximativement 2 * π * r (où r = 20) */
+  stroke-dashoffset: 139;
+  animation: draw-circle 0.2s linear forwards;
+}
+
+@keyframes draw-circle {
+  to {
+    stroke-dashoffset: 0;
+  }
+}

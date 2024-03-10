@@ -1,1 +1,49 @@
-/* You can add global styles to this file, and also import other style files */
+$vert_turquoise: rgb(4, 131, 143);
+$border_vert_turquoise: 2px solid $vert_turquoise;
+$border_radius1: 5px;
+$block_padding: 5px;
+
+// Définition du mixin
+@mixin titleBlockStyle {
+  background-color: $vert_turquoise;
+  border: $border_vert_turquoise;
+  border-radius: $border_radius1;
+  padding: $block_padding;
+  color: white;
+  font-size: large;
+}
+
+// Définition du mixin
+@mixin dataValueBlockStyle {
+  border: $border_vert_turquoise;
+  border-radius: $border_radius1;
+  padding: $block_padding;
+}
+.header_blocks {
+  display: flexbox;
+  margin: 0 auto;
+  width: fit-content;
+  
+}
+.title {
+  @include titleBlockStyle;
+  width: fit-content;
+  margin: 25px auto;
+}
+.header_block {
+  display: inline-block;
+  margin-left: 25px;
+  @include dataValueBlockStyle;
+  width: fit-content;
+  padding: 0 10px;
+}
+
+.header_title {
+  display: block;
+  color: grey;
+}
+.header_value {
+  color: #000;
+  text-align: center;
+  font-weight: bolder;
+}
