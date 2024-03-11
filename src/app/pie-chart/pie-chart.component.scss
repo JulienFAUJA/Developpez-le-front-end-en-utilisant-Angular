@@ -1,13 +1,19 @@
-#chart-container{
-  position: relative;
-    width: fit-content;
-    margin: 10% auto;
-}
+.myPie{
 
-.MyChart{
-    width: calc(100% + 20em);
-    margin: 0 auto;
-    margin-top: 12%;
+}
+.chart-container {
+ background-color: rgb(179, 244, 179);
+ width:auto;
+ width: 100%;
+} 
+
+.MyChart {
+
+width: 100%;
+margin: auto;
+
+
+
 }
 /* .chart-legend ul {
     list-style: none;

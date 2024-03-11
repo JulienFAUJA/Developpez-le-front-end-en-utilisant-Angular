@@ -29,50 +29,49 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
   public colors: string[] = [
     'rgb(149, 96, 101)',
     'rgb(184, 203, 231)',
-   
+
     'rgb(137, 161, 219)',
-    
+
     'rgb(121, 61, 82)',
     'rgb(151, 128, 161)',
   ];
   @Input() countryData: { country: string; medals: number }[] = [];
 
-  constructor(private router: Router) { }
+  constructor(private router: Router) {}
 
-  private hasRegisteredPlugin(): boolean {
-    return !!Chart.registry?.plugins.get(PLUGIN_ID);
+  goOn(countryName: string) {
+    return this.router; //.navigateByUrl('detail');
   }
 
-  goOn(countryName:string) {
-    return this.router;//.navigateByUrl('detail');
-}
-
   createChart() {
-   
     const self = this;
     this.chart = new Chart('MyChart', {
       type: 'pie',
-      
+
       data: {
         labels: this.countryData.map((data) => data.country),
-
 
         datasets: [
           {
             data: this.countryData.map((data) => data.medals),
-            backgroundColor: this.colors, 
-            borderColor:this.colors,
-            hoverOffset:0,
-            
+            backgroundColor: this.colors,
+            borderColor: this.colors,
+            hoverOffset: 0,
           },
         ],
       },
       plugins: [ChartDataLabels],
 
       options: {
+        layout:{
+          padding:25,
+          
+        },
         responsive: true,
-        aspectRatio: 2.5,
+       
+        maintainAspectRatio:false,
         
+
         plugins: {
           datalabels: {
             formatter: function (value, context) {
@@ -83,103 +82,43 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
               click: function (context, event) {
                 // Receives `click` events only for labels of the first dataset.
                 // The clicked label index is available in `context.dataIndex`.
-                const country_name = context.chart.data.labels?.at(context.dataIndex);
-                console.log(
-                  'label ' + country_name + ' has been clicked!'
+                const country_name = context.chart.data.labels?.at(
+                  context.dataIndex
                 );
+                console.log('label ' + country_name + ' has been clicked!');
                 console.log(
                   'mouse is at position x:',
                   event.x,
                   'and y:',
                   event.y
                 );
-                self.router.navigateByUrl('/detail/'+context.dataIndex);
+                self.router.navigateByUrl('/detail/' + context.dataIndex);
               },
-              enter: function(context, event) {
+              enter: function (context, event) {
                 // Receives `enter` events for any labels of any dataset. Indices of the
                 // clicked label are: `context.datasetIndex` and `context.dataIndex`.
                 // For example, we can modify keep track of the hovered state and
                 // return `true` to update the label and re-render the chart.
-                context.active=true;
-                
+                context.active = true;
+
                 return context.active;
               },
-              
             },
-
-            offset: function (context) {
-              const data_index = context.dataIndex;
-              if (data_index < 2) {
-                return -10;
-              } else if (data_index == 2) {
-                return 130;
-              } else {
-                return 30;
-              }
+            borderWidth:1,
+            borderColor:'red',
+            padding:{
+              left:30,
+              right:20,
             },
-            align: function (context) {
-              const data_index = context.dataIndex;
-              if (data_index < 2) {
-                return 'right';
-              } else if (data_index == 2) {
-                return -45;
-              } else {
-                return 'left';
-              }
-            },
-
+          offset:-10,
+           align:"end",
             anchor: 'end',
-            textAlign: 'end',
+            textAlign: 'start',
             font: {
               weight: 'bold',
               size: 22,
             },
-            padding: function (context) {
-              const data_index = context.dataIndex;
-              if (data_index == 0) {
-                return {
-                  left: 220,
-                  top: 10,
-                  right: 15,
-                  bottom: -40,
-                };
-              } else if (data_index == 1) {
-                return {
-                  left: 110,
-                  top: 20,
-                  right: 100,
-                  bottom: -10,
-                };
-              } else if (data_index == 2) {
-                return {
-                  left: 120,
-                  top: 0,
-                  right: 160,
-                  bottom: 0,
-                };
-              } else if (data_index == 3) {
-                return {
-                  left: 200,
-                  top: 0,
-                  right: 90,
-                  bottom: 0,
-                };
-              } else if (data_index == 4) {
-                return {
-                  left: 240,
-                  top: 100,
-                  right: 50,
-                  bottom: 0,
-                };
-              } else {
-                return {
-                  left: 200,
-                  top: 20,
-                  right: 100,
-                  bottom: -10,
-                };
-              }
-            },
+            
           },
 
           legend: {
@@ -188,6 +127,7 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
               color: 'rgb(0, 0, 0)',
             },
           },
+         
           tooltip: {
             enabled: true, // Active les tooltips
             backgroundColor: 'rgb(4, 131, 143)', // Fond des tooltips
@@ -312,10 +252,7 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
         },
       },
     });
-    
   }
-
-
 
   ngOnInit(): void {
     console.log(

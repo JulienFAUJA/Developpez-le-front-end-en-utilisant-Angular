@@ -1,6 +1,6 @@
 <h2>Olympic games app</h2>
 <hr />
-<div class="container">
+
   <div class="title">Medals per Country</div>
   <div class="header_blocks">
     <aside class="header_block">
@@ -17,14 +17,9 @@
       </div>
     </aside>
   </div>
-
-  <div class="chart">
-    <!-- <app-pie-chart></app-pie-chart> -->
-    <!-- Autre HTML -->
-
-    <app-pie-chart [countryData]="totalMedalsByCountry"></app-pie-chart>
-  </div>
-
+  <app-pie-chart class="myPie" [countryData]="totalMedalsByCountry"></app-pie-chart>
+<!--   <div class="chart"></div>
+ -->
   <svg
     width="200"
     height="150"
@@ -86,7 +81,7 @@
       style="animation-delay: 1s"
     />
   </svg>
-</div>
+
 
 <!--
 

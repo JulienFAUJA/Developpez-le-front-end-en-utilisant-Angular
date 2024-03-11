@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { Olympic } from '../models/Olympic';
 
@@ -13,20 +13,29 @@ export class OlympicService {
 
   constructor(private http: HttpClient) {}
 
-  loadInitialData() {
-    return this.http.get<any>(this.olympicUrl).pipe(
-      tap((value) => this.olympics$.next(value)),
-      catchError((error, caught) => {
-        // TODO: improve error handling
+  // Charge les données initiales
+  loadInitialData(): Observable<Olympic[]> {
+    return this.http.get<Olympic[]>(this.olympicUrl).pipe(
+      tap((olympics) => this.olympics$.next(olympics)),
+      catchError((error) => {
         console.error(error);
-        // can be useful to end loading state and let the user know something went wrong
-        this.olympics$.next([]);
-        return caught;
+        this.olympics$.next([]); // Réinitialise les données en cas d'erreur
+        return throwError(error); // Propage l'erreur
       })
     );
   }
 
-  loadHomeData(): Observable<Olympic[]> {
+  // Obtient les données olympiques
+  getOlympics(): Observable<Olympic[]> {
+    return this.olympics$.asObservable();
+  }
+
+
+}
+
+
+/*
+loadHomeData(): Observable<Olympic[]> {
     return this.http.get<Olympic[]>(this.olympicUrl).pipe(
       tap((value) => this.olympics$.next(value)),
       catchError((error, caught) => {
@@ -36,8 +45,4 @@ export class OlympicService {
       })
     );
   }
-
-  getOlympics(): Observable<Olympic[]> {
-    return this.olympics$.asObservable();
-  }
-}
+*/

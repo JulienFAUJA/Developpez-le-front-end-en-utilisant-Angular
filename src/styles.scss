@@ -4,7 +4,13 @@ $border_vert_turquoise: 2px solid $vert_turquoise;
 $border_vert_turquoise_btn: 1px solid $vert_turquoise_darken30;
 $border_radius1: 5px;
 $block_padding: 5px;
-
+html, body{
+  
+  width: 100%;
+  height: 100;
+  padding: 10px;
+  margin: 0;
+}
 // Définition du mixin
 @mixin titleBlockStyle {
   background-color: $vert_turquoise;
@@ -34,6 +40,8 @@ $block_padding: 5px;
   display: flexbox;
   margin: 0 auto;
   width: fit-content;
+  margin-bottom: 5%;
+  
 }
 .title {
   @include titleBlockStyle;
@@ -46,6 +54,7 @@ $block_padding: 5px;
   @include dataValueBlockStyle;
   width: fit-content;
   padding: 0 10px;
+  
 }
 
 .header_title {

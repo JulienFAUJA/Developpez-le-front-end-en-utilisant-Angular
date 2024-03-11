@@ -12,6 +12,7 @@ import annotationPlugin from 'chartjs-plugin-annotation';
 import { Observable, of } from 'rxjs';
 import { Olympic } from 'src/app/core/models/Olympic';
 import { OlympicService } from 'src/app/core/services/olympic.service';
+import { Participation } from '../core/models/Participation';
 
 Chart.register(annotationPlugin);
 
@@ -24,23 +25,24 @@ export class DetailComponent implements OnInit, OnChanges, OnDestroy {
   public chart: any;
   public font_size: number = 22;
   countryName!: string;
-  country!:Olympic;
+  country!: Olympic;
   totalNumberOfMedals!: number;
   numberOfParticipations!: number;
   totalNumberOfAthletes!: number;
+  participations!: Participation[];
   public olympics$: Observable<any> = of(null);
 
   createChart() {
-    this.chart = new Chart('MyChart', {
+    this.chart = new Chart('MyChartLine', {
       type: 'line',
 
       data: {
-        xLabels: [this.countryName],
+        xLabels: [this.participations.map((value) => value.year)],
+        yLabels: [this.participations.map((value) => value.medalsCount)],
 
         datasets: [
           {
-            data: [250, 400, 200, 405, 220, 180],
-            
+            data: [this.participations.map((value) => value.medalsCount)],
           },
         ],
       },
@@ -54,29 +56,7 @@ export class DetailComponent implements OnInit, OnChanges, OnDestroy {
               color: 'rgb(255, 99, 132)',
             },
           },
-          tooltip: {
-            enabled: true, // Active les tooltips
-            backgroundColor: 'rgb(4, 131, 143)', // Fond des tooltips
-            bodyColor: '#fff', // Couleur du texte des tooltips
-            displayColors: false,
-            titleFont: {
-              size: this.font_size, // Taille de la police pour les tooltips
-            },
-            titleColor: 'white',
-            titleAlign: 'center',
-            bodyAlign: 'center',
-            bodyFont: {
-              size: this.font_size, // Taille de la police pour les tooltips
-            },
-            bodySpacing: 4, // Espacement à l'intérieur du tooltip
-            mode: 'point', // Montre les tooltips au point le plus proche
-            position: 'nearest', // Positionne les tooltips près du point le plus proche
-            cornerRadius: 3, // Rayon des coins du tooltip
-            xAlign: 'center',
-            yAlign: 'bottom',
-            caretSize: 15, // Taille du triangle sous le tooltip
-            // Vous pouvez ajuster d'autres styles ici pour correspondre à vos besoins
-          },
+
           annotation: {
             annotations: {
               label1: {
@@ -110,31 +90,45 @@ export class DetailComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  constructor(private olympicService: OlympicService, private route: ActivatedRoute) {}
+  constructor(
+    private olympicService: OlympicService,
+    private route: ActivatedRoute
+  ) {}
 
-  get_data(countryId:number) {
-    
+  get_data(countryId: number) {
     this.olympicService.getOlympics().subscribe((data: Olympic[]) => {
-     
-     
+      console.log('countryId:', countryId);
       this.country = data[countryId];
-      this.countryName=this.country.country;
-      this.numberOfParticipations = new Set(this.country.participations.map((participation) => participation.year)).size;
-    
+      console.log('this.country:', this.country);
+      this.countryName = this.country.country;
+      this.participations = this.country.participations;
+      this.numberOfParticipations = new Set(
+        this.participations.map((participation) => participation.year)
+      ).size;
+
       // Création d'un attribut pour chaque pays avec la somme totale de ses médailles
-      this.totalNumberOfMedals = this.country.participations.reduce((sum, participation) => sum + participation.medalsCount, 0);
-      this.totalNumberOfAthletes = this.country.participations.reduce((sum, participation) => sum + participation.athleteCount, 0);
-    
+      this.totalNumberOfMedals = this.participations.reduce(
+        (sum, participation) => sum + participation.medalsCount,
+        0
+      );
+      this.totalNumberOfAthletes = this.participations.reduce(
+        (sum, participation) => sum + participation.athleteCount,
+        0
+      );
+
       console.log(`Nom du pays: ${this.countryName}`);
-      console.log(`Nombre de participations aux JO: ${this.numberOfParticipations}`);
+      console.log(
+        `Nombre de participations aux JO: ${this.numberOfParticipations}`
+      );
       console.log(`Total des médailles du pays:`, this.totalNumberOfMedals);
       console.log(`Total des athlètes du pays:`, this.totalNumberOfAthletes);
     });
-    
+    this.createChart();
   }
   ngOnInit() {
     const countryId = +this.route.snapshot.params['id'];
     this.get_data(countryId);
+    
   }
 
   ngOnDestroy(): void {
@@ -147,7 +141,7 @@ export class DetailComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges): void {
     console.log('mes data parsées:');
-    if (changes['countryData']) {
+    if (changes['participations']) {
       if (this.chart) {
         this.chart.destroy();
         this.chart = null;
