@@ -1,33 +1,36 @@
-.myPie{
-
+@media screen and (max-width: 768px) {
+  .chart-container {
+    position: relative;
+    height: 60vh;
+    width: 90vh;
+    margin: auto;
+    padding: 0;
+  }
 }
-.chart-container {
- background-color: rgb(179, 244, 179);
- width:auto;
- width: 100%;
-} 
+
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+  .chart-container {
+    position: relative;
+    height: 70vh;
+    width: 95vh;
+    margin: auto;
+    padding: 0;
+  }
+}
+
+@media screen and (min-width: 1025px) {
+  .chart-container {
+    position: relative;
+    height: 60vh;
+    width: 90vh;
+    margin: auto;
+    padding: 0;
+  }
+}
+
+
 
 .MyChart {
 
-width: 100%;
-margin: auto;
-
-
 
 }
-/* .chart-legend ul {
-    list-style: none;
-  }
-  
-  .chart-legend li {
-    display: flex;
-    align-items: center;
-  }
-  
-  .legend-color {
-    width: 12px;
-    height: 12px;
-    display: inline-block;
-    margin-right: 8px;
-  }
-   */

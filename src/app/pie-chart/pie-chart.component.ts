@@ -6,11 +6,13 @@ import {
   OnInit,
   SimpleChanges,
 } from '@angular/core';
-import Chart from 'chart.js/auto';
+import Chart, { ArcElement } from 'chart.js/auto';
 import annotationPlugin from 'chartjs-plugin-annotation';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { getChartLabelPlugin, PLUGIN_ID } from 'chart.js-plugin-labels-dv';
 import { Router } from '@angular/router';
+import { observeOn } from 'rxjs';
+import { text } from 'body-parser';
 
 Chart.register(annotationPlugin);
 Chart.register(ChartDataLabels);
@@ -27,13 +29,12 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
   public chart: any;
   public font_size: number = 22;
   public colors: string[] = [
+   
+    'rgb(151, 128, 161)',
+    'rgb(121, 61, 82)',
     'rgb(149, 96, 101)',
     'rgb(184, 203, 231)',
-
     'rgb(137, 161, 219)',
-
-    'rgb(121, 61, 82)',
-    'rgb(151, 128, 161)',
   ];
   @Input() countryData: { country: string; medals: number }[] = [];
 
@@ -44,7 +45,165 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   createChart() {
+    interface Point {
+      x: number;
+      y: number;
+    }
+
+    function calculateAngle(
+      horizontalLine: number,
+      verticalLine: number,
+      pointX: number,
+      pointY: number
+    ): number {
+      // Calculer les différences entre les coordonnées du point et de l'origine
+      const dx = pointX - horizontalLine;
+      const dy = pointY - verticalLine;
+
+      // Calculer l'angle en radians en utilisant la fonction arctangente
+      let angle = Math.atan2(dy, dx);
+
+      // Convertir l'angle en degrés
+      angle = angle * (180 / Math.PI);
+
+      // Ajuster l'angle pour qu'il soit dans la plage de 0 à 360 degrés
+      if (angle < 0) {
+        angle = 360 + angle;
+      }
+
+      return angle;
+    }
+
+    function GetEndPoint(
+      chart: Chart,
+      startPointX: number,
+      startPointY: number,
+      angleInDegrees: number
+    ): Point {
+      const left = chart.chartArea.left;
+      const centerX = chart.chartArea.width / 2;
+      const centerY = chart.chartArea.height / 2;
+    
+      // Déterminer le quadrant de l'angle
+      let quadrant: number;
+      if (startPointX >= centerX) {
+        if (startPointY >= centerY) {
+          quadrant = 1;
+        } else {
+          quadrant = 4;
+        }
+      } else {
+        if (startPointY >= centerY) {
+          quadrant = 2;
+        } else {
+          quadrant = 3;
+        }
+      }
+      const startLenght:number = 160;
+      // Ajuster les longueurs en fonction du quadrant
+      let lengthX = quadrant === 1 || quadrant === 4 ? startLenght : -startLenght;
+      let lengthY = quadrant === 3 || quadrant === 2 ? startLenght : startLenght;
+    
+      // Convertir l'angle en radians
+      const angleInRadians = (angleInDegrees * Math.PI) / 180;
+    
+      let endX = startPointX + lengthX * Math.cos(-angleInRadians);
+      let endY = startPointY+ lengthY * Math.sin(angleInRadians);
+    
+      while (chart.ctx.isPointInStroke(endX, endY)) {
+        // Calculer les coordonnées de fin de la ligne en fonction de l'angle et de la longueur
+        endX = startPointX + lengthX * Math.cos(angleInRadians);
+        endY = startPointY + lengthY * Math.sin(angleInRadians);
+    
+        // Ajuster les longueurs en fonction du quadrant de l'angle
+        if (quadrant === 1 || quadrant === 4) {
+          lengthX += 10;
+        } else {
+          lengthX -= 10;
+        }
+        if (quadrant === 3 || quadrant === 2) {
+          lengthY += 10;
+        } else {
+          lengthY -= 10;
+        }
+      }
+    
+      // Retourner les coordonnées de début et de fin de la ligne
+      return {
+        x: endX,
+        y: endY,
+      };
+    }
+    
+
+    // Tri du tableau par ordre alphabétique du pays
+this.countryData.sort((a, b) => {
+  // Compare les pays en les convertissant en minuscules pour ignorer la casse
+  return a.country.toLowerCase().localeCompare(b.country.toLowerCase());
+});
+    
+
     const self = this;
+
+    const pie_labels_plugin = {
+      id: 'pieLabelsLinePlugin',
+      afterDraw(chart: Chart, args: {}, options: {}) {
+        const {
+          ctx,
+          chartArea: { top, bottom, left, right, width, height },
+        } = chart;
+        //console.log(chart.data.datasets);
+        chart.data.datasets.forEach((dataset, i) => {
+          console.log(chart.getDatasetMeta(i));
+          chart.getDatasetMeta(i).data.forEach((datapoint, index) => {
+            console.log('tooltipPosition:', datapoint.tooltipPosition(true));
+            const { x, y } = datapoint.tooltipPosition(true);
+            const rectBox = {
+              left: left,
+              top: top,
+              right: right,
+              bottom: bottom,
+            };
+            const angle = calculateAngle(height / 2, width / 2, x, y);
+            console.log('angle:', angle);
+            const color = dataset.backgroundColor as string[];
+            ctx.fillStyle = color[index];
+
+            const halfWidth = width / 2;
+            const halfHeight = height / 2;
+            const label_pos = chart.ctx.isPointInPath(x + 10, y + 20);
+            const endPoint: Point = GetEndPoint(chart, x, y, angle);
+            console.log('label:',chart.data.labels?.at(index), endPoint,"x:",x);
+            ctx.beginPath();
+            ctx.moveTo(endPoint.x, endPoint.y+20);
+            const offset:number = x<halfWidth ? -1 : 1;
+            //ctx.lineTo(x, endPoint.y+20);
+            const left_offset = index>2 ? -120 : 0;
+            ctx.fillRect(x+left_offset, endPoint.y+20, Math.abs(endPoint.x-x),3);
+
+
+            ctx.strokeStyle = color[index];
+            //ctx.strokeRect(endPoint.x, endPoint.y, 20, 5)
+            ctx.stroke();
+            const texte = chart.data.labels?.at(index) as string;
+            const textWidth = ctx.measureText(texte);
+            ctx.font="20px Arial";
+            ctx.fillStyle='black';
+            const text_x = index>2 ? x+left_offset-(textWidth.width)+10 : endPoint.x;
+            ctx.fillText(texte,text_x, endPoint.y+30);
+           
+
+            //ctx.fillStyle = color[index];
+            //ctx.fillRect(x,y, 5, 5);
+
+            /*ctx.fillRect(x,y, 5, 5);
+            const x2:number = datapoint_angles?.x || 1;
+            const y2:number = datapoint_angles?.y || 1;
+            */
+          });
+        });
+      },
+    };
     this.chart = new Chart('MyChart', {
       type: 'pie',
 
@@ -60,23 +219,20 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
           },
         ],
       },
-      plugins: [ChartDataLabels],
+      plugins: [ChartDataLabels, pie_labels_plugin],
 
       options: {
-        layout:{
-          padding:25,
-          
+        layout: {
+          padding: 80, //25,
         },
         responsive: true,
-       
-        maintainAspectRatio:false,
-        
+        maintainAspectRatio: false,
 
         plugins: {
           datalabels: {
             formatter: function (value, context) {
               console.log(context.chart.data.labels?.at(context.dataIndex));
-              return '' + context.chart.data.labels?.at(context.dataIndex);
+              return '';// + context.chart.data.labels?.at(context.dataIndex);
             },
             listeners: {
               click: function (context, event) {
@@ -104,21 +260,26 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
                 return context.active;
               },
             },
-            borderWidth:1,
-            borderColor:'red',
-            padding:{
-              left:30,
-              right:20,
+            
+            padding: {
+              left: 10,
+              right: 10,
             },
-          offset:-10,
-           align:"end",
+            offset: 20,
+            align: function(context){
+              const idx = context.dataIndex;
+              if(idx>3){
+                return "left";
+              }
+              return "right";
+            },
             anchor: 'end',
-            textAlign: 'start',
+            textAlign: 'end',
+            clamp:true,
             font: {
               weight: 'bold',
               size: 22,
             },
-            
           },
 
           legend: {
@@ -127,7 +288,7 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
               color: 'rgb(0, 0, 0)',
             },
           },
-         
+
           tooltip: {
             enabled: true, // Active les tooltips
             backgroundColor: 'rgb(4, 131, 143)', // Fond des tooltips
@@ -143,110 +304,17 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
               size: this.font_size, // Taille de la police pour les tooltips
             },
             bodySpacing: 4, // Espacement à l'intérieur du tooltip
-            mode: 'point', // Montre les tooltips au point le plus proche
-            position: 'nearest', // Positionne les tooltips près du point le plus proche
+            mode: 'nearest', 
+            position: 'average', // Positionne les tooltips près du point le plus proche
             cornerRadius: 3, // Rayon des coins du tooltip
-            xAlign: 'center',
-            yAlign: 'bottom',
+            xAlign: 'left',
+            yAlign: 'top',
             caretSize: 15, // Taille du triangle sous le tooltip
             // Vous pouvez ajuster d'autres styles ici pour correspondre à vos besoins
           },
           annotation: {
             annotations: {
-              label1: {
-                type: 'label',
-                xValue: 0,
-                xAdjust: 200,
-                yValue: 200,
-                yAdjust: -200,
-                backgroundColor: 'rgba(255,255,255, 0)',
-                content: [],
-                font: {
-                  size: this.font_size,
-                },
-
-                callout: {
-                  display: true,
-                  borderColor: this.colors[0],
-                  side: 110,
-                  borderWidth: 6,
-                },
-              },
-              label2: {
-                type: 'label',
-                xValue: 100,
-                xAdjust: 290,
-                yValue: 10,
-                yAdjust: -110,
-                backgroundColor: 'rgba(255,255,255, 0)',
-                content: [],
-                font: {
-                  size: this.font_size,
-                },
-
-                callout: {
-                  display: true,
-                  borderColor: this.colors[1],
-                  side: 120,
-                  borderWidth: 6,
-                  borderJoinStyle: 'round',
-                },
-              },
-              label3: {
-                type: 'label',
-                xValue: 20,
-                xAdjust: 320,
-                yValue: 10,
-                yAdjust: 100,
-                backgroundColor: 'rgba(255,255,255, 0)',
-                content: [],
-                font: {
-                  size: this.font_size,
-                },
-                callout: {
-                  display: true,
-                  borderColor: this.colors[2],
-                  side: 120,
-                  borderWidth: 6,
-                },
-              },
-
-              label4: {
-                type: 'label',
-                xValue: 100,
-                xAdjust: -280,
-                yValue: 10,
-                yAdjust: -195,
-                backgroundColor: 'rgba(255,255,255, 0)',
-                content: [],
-                font: {
-                  size: this.font_size,
-                },
-                callout: {
-                  display: true,
-                  borderColor: this.colors[4],
-                  side: 180,
-                  borderWidth: 6,
-                },
-              },
-              label5: {
-                type: 'label',
-                xValue: 100,
-                xAdjust: -400,
-                yValue: 0,
-                yAdjust: -15,
-                backgroundColor: 'rgba(255,255,255, 0)',
-                content: [],
-                font: {
-                  size: this.font_size,
-                },
-                callout: {
-                  display: true,
-                  borderColor: this.colors[3],
-                  side: 10,
-                  borderWidth: 6,
-                },
-              },
+             
             },
           },
         },
