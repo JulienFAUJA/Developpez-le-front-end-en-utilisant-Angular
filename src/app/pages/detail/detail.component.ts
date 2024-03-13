@@ -12,7 +12,7 @@ import annotationPlugin from 'chartjs-plugin-annotation';
 import { Observable, of } from 'rxjs';
 import { Olympic } from 'src/app/core/models/Olympic';
 import { OlympicService } from 'src/app/core/services/olympic.service';
-import { Participation } from '../core/models/Participation';
+import { Participation } from '../../core/models/Participation';
 
 Chart.register(annotationPlugin);
 
@@ -128,7 +128,6 @@ export class DetailComponent implements OnInit, OnChanges, OnDestroy {
   ngOnInit() {
     const countryId = +this.route.snapshot.params['id'];
     this.get_data(countryId);
-    
   }
 
   ngOnDestroy(): void {
