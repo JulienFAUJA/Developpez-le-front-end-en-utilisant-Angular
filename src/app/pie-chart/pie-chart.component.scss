@@ -15,7 +15,7 @@ $smallScreen: 768px;
 
 // Mixin pour les styles communs
 @mixin commonStyles {
-  position: relative;
+  position: absolute;
 
   margin: auto;
   padding: 0;

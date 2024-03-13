@@ -6,7 +6,7 @@ import {
   OnInit,
   SimpleChanges,
 } from '@angular/core';
-import Chart, { ArcElement } from 'chart.js/auto';
+import Chart, { ArcElement, ChartComponent } from 'chart.js/auto';
 import annotationPlugin from 'chartjs-plugin-annotation';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { getChartLabelPlugin, PLUGIN_ID } from 'chart.js-plugin-labels-dv';
@@ -28,7 +28,7 @@ Chart.register(getChartLabelPlugin());
   styleUrls: ['./pie-chart.component.scss'],
 })
 export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
-  public chart: any;
+  public chart:any;
   public font_size: number = 22;
   public colors: string[] = [
    
@@ -38,7 +38,7 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
     'rgb(184, 203, 231)',
     'rgb(137, 161, 219)',
   ];
-  @Input() countryData: { country: string; medals: number }[] = [];
+  @Input() countryData: {id:number, country: string; medals: number }[] = [];
 
   constructor(private router: Router) {}
 
@@ -127,7 +127,6 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
         }
       }
     
-      // Retourner les coordonnées de début et de fin de la ligne
       return {
         x: endX,
         y: endY,
@@ -186,11 +185,7 @@ this.countryData.sort((a, b) => {
           chartArea: { top, bottom, left, right, width, height },
         } = chart;
         
-        
-        // Supposons que vous ayez déjà créé votre graphique pie avec Chart.js
-
-          // Ajoutez un événement click sur le canvas du graphique
-          
+   
 
         console.log("chartArea:",chart.chartArea);
         if(label_enabled===false){
@@ -259,6 +254,7 @@ this.countryData.sort((a, b) => {
         
       },
     };
+    
     this.chart = new Chart('MyChart', {
       type: 'pie',
 
@@ -304,7 +300,8 @@ this.countryData.sort((a, b) => {
                   'and y:',
                   event.y
                 );
-                self.router.navigateByUrl('/detail/' + context.dataIndex);
+                console.log("country:", self.countryData[context.dataIndex].country, "id:",self.countryData[context.dataIndex].id,"index:",context.dataIndex)
+                self.router.navigateByUrl('/detail/' + self.countryData[context.dataIndex].id);
               },
               enter: function (context, event) {
                 // Receives `enter` events for any labels of any dataset. Indices of the

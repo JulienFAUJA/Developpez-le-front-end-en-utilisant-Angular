@@ -32,17 +32,3 @@ export class OlympicService {
 
 
 }
-
-
-/*
-loadHomeData(): Observable<Olympic[]> {
-    return this.http.get<Olympic[]>(this.olympicUrl).pipe(
-      tap((value) => this.olympics$.next(value)),
-      catchError((error, caught) => {
-        console.error(error);
-        this.olympics$.next([]);
-        return caught;
-      })
-    );
-  }
-*/

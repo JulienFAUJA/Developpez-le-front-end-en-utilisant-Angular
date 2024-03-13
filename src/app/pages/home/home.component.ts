@@ -13,11 +13,11 @@ import { getRelativePosition } from 'chart.js/helpers';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-  public olympics$: Observable<any> = of(null);
+  public olympics$!: Observable<Olympic[]>;
   numberOfCountries!: number;
   listOfCountries!: string[];
   totalJO!: number;
-  totalMedalsByCountry: { country: string; medals: number }[] = [];
+  totalMedalsByCountry: {id:number,  country: string; medals: number }[] = [];
 
 
   constructor(private olympicService: OlympicService) {}
@@ -35,6 +35,7 @@ export class HomeComponent implements OnInit {
     
       // Création d'un attribut pour chaque pays avec la somme totale de ses médailles
       this.totalMedalsByCountry = data.map((country) => ({
+        id:country.id,
         country: country.country,
         medals: country.participations.reduce((sum, participation) => sum + participation.medalsCount, 0)
       }));

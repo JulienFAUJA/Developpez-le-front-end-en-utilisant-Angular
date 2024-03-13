@@ -30,7 +30,7 @@ export class DetailComponent implements OnInit, OnChanges, OnDestroy {
   numberOfParticipations!: number;
   totalNumberOfAthletes!: number;
   participations!: Participation[];
-  public olympics$: Observable<any> = of(null);
+  public olympics$!: Observable<Olympic[]>;
 
   createChart() {
     this.chart = new Chart('MyChartLine', {
