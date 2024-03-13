@@ -16,10 +16,12 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 As you can see, an architecture has already been defined for the project. It is just a suggestion, you can choose to use your own. The predefined architecture includes (in addition to the default angular architecture) the following:
 
-##- `components` folder: contains every reusable components
-## - `pages` folder: contains components used for routing
-[![forthebadge](https://forthebadge.com/images/badges/uh-oh-404-no-pages-or-badges.svg)](https://forthebadge.com)
-##- `core` folder: contains the business logic (`services` and `models` folders)
+## - `components` 
+folder: contains every reusable components
+## - `pages` 
+folder: contains components used for routing    [![forthebadge](https://forthebadge.com/images/badges/uh-oh-404-no-pages-or-badges.svg)](https://forthebadge.com)
+## - `core` 
+folder: contains the business logic (`services` and `models` folders)
 
 I suggest you to start by understanding this starter code. Pay an extra attention to the `app-routing.module.ts` and the `olympic.service.ts`.
 
