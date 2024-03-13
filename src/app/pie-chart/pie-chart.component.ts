@@ -13,6 +13,8 @@ import { getChartLabelPlugin, PLUGIN_ID } from 'chart.js-plugin-labels-dv';
 import { Router } from '@angular/router';
 import { observeOn } from 'rxjs';
 import { text } from 'body-parser';
+import { Point } from '../core/models/Point';
+import { Size, Size1 } from '../core/models/Size';
 
 Chart.register(annotationPlugin);
 Chart.register(ChartDataLabels);
@@ -45,10 +47,7 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   createChart() {
-    interface Point {
-      x: number;
-      y: number;
-    }
+
 
     function calculateAngle(
       horizontalLine: number,
@@ -141,9 +140,43 @@ this.countryData.sort((a, b) => {
   // Compare les pays en les convertissant en minuscules pour ignorer la casse
   return a.country.toLowerCase().localeCompare(b.country.toLowerCase());
 });
-    
-
+    function get_ratio(val:number, text:string, direction:string){
+      let div:number=1;
+      if(direction==="h"){
+        div=596;
+      }
+      else if(direction==="w"){
+        div=963;
+      }
+      else if(direction==="r"){
+        div=1.6157718120805369;
+      }
+      console.log(text, val/div);
+    }
     const self = this;
+    const canvas = document.querySelector('canvas');
+    const orientation:ScreenOrientation = window.screen.orientation;
+    let label_enabled:boolean=false;
+    console.log("orientation:", orientation);
+    if(orientation.type==="portrait-primary"){
+      canvas?.setAttribute("width",(window.screen.availWidth).toString());
+      canvas?.setAttribute("height",(window.screen.availHeight*0.8).toString());
+      label_enabled = true;
+    }
+    else if(orientation.type==="landscape-primary"){
+      canvas?.setAttribute("width",(window.screen.availWidth/2).toString());
+      canvas?.setAttribute("height",(window.screen.availHeight*0.8).toString());
+      label_enabled = false;
+    }
+    canvas?.setAttribute('padding',"0");
+    
+    console.log('canvas:', canvas, window.screen.availWidth, window.screen.availHeight);
+    
+    const screen:Size1=window.screen;
+    const screen_size:Size = {width:screen.width, height:screen.height,aspect_ratio:screen.width/screen.height};
+
+    const padding_offset:number=49.51194184839045*screen_size.aspect_ratio;
+
 
     const pie_labels_plugin = {
       id: 'pieLabelsLinePlugin',
@@ -152,56 +185,78 @@ this.countryData.sort((a, b) => {
           ctx,
           chartArea: { top, bottom, left, right, width, height },
         } = chart;
-        //console.log(chart.data.datasets);
-        chart.data.datasets.forEach((dataset, i) => {
-          console.log(chart.getDatasetMeta(i));
-          chart.getDatasetMeta(i).data.forEach((datapoint, index) => {
-            console.log('tooltipPosition:', datapoint.tooltipPosition(true));
-            const { x, y } = datapoint.tooltipPosition(true);
-            const rectBox = {
-              left: left,
-              top: top,
-              right: right,
-              bottom: bottom,
-            };
-            const angle = calculateAngle(height / 2, width / 2, x, y);
-            console.log('angle:', angle);
-            const color = dataset.backgroundColor as string[];
-            ctx.fillStyle = color[index];
+        
+        
+        // Supposons que vous ayez déjà créé votre graphique pie avec Chart.js
 
-            const halfWidth = width / 2;
-            const halfHeight = height / 2;
-            const label_pos = chart.ctx.isPointInPath(x + 10, y + 20);
-            const endPoint: Point = GetEndPoint(chart, x, y, angle);
-            console.log('label:',chart.data.labels?.at(index), endPoint,"x:",x);
-            ctx.beginPath();
-            ctx.moveTo(endPoint.x, endPoint.y+20);
-            const offset:number = x<halfWidth ? -1 : 1;
-            //ctx.lineTo(x, endPoint.y+20);
-            const left_offset = index>2 ? -120 : 0;
-            ctx.fillRect(x+left_offset, endPoint.y+20, Math.abs(endPoint.x-x),3);
+          // Ajoutez un événement click sur le canvas du graphique
+          
+
+        console.log("chartArea:",chart.chartArea);
+        if(label_enabled===false){
+          chart.data.datasets.forEach((dataset, i) => {
+            
+    
 
 
-            ctx.strokeStyle = color[index];
-            //ctx.strokeRect(endPoint.x, endPoint.y, 20, 5)
-            ctx.stroke();
-            const texte = chart.data.labels?.at(index) as string;
-            const textWidth = ctx.measureText(texte);
-            ctx.font="20px Arial";
-            ctx.fillStyle='black';
-            const text_x = index>2 ? x+left_offset-(textWidth.width)+10 : endPoint.x;
-            ctx.fillText(texte,text_x, endPoint.y+30);
-           
 
-            //ctx.fillStyle = color[index];
-            //ctx.fillRect(x,y, 5, 5);
-
-            /*ctx.fillRect(x,y, 5, 5);
-            const x2:number = datapoint_angles?.x || 1;
-            const y2:number = datapoint_angles?.y || 1;
-            */
+            console.log(chart.getDatasetMeta(i));
+            chart.getDatasetMeta(i).data.forEach((datapoint, index) => {
+              console.log('tooltipPosition:', datapoint.tooltipPosition(true));
+              const { x, y } = datapoint.tooltipPosition(true);
+              const rectBox = {
+                left: left,
+                top: top,
+                right: right,
+                bottom: bottom,
+  
+              };
+              const angle = calculateAngle(height / 2, width / 2, x, y);
+              console.log('angle:', angle);
+              const color = dataset.backgroundColor as string[];
+              ctx.fillStyle = color[index];
+  
+              const halfWidth = width / 2;
+              const halfHeight = height / 2;
+              
+  
+              console.log("screen_size:", screen_size);
+              get_ratio(80,"offset h:", "r");
+  
+              const label_pos = chart.ctx.isPointInPath(x, y);
+              const endPoint: Point = GetEndPoint(chart, x, y, angle);
+              console.log('label:',chart.data.labels?.at(index), endPoint,"x:",x);
+              ctx.beginPath();
+              ctx.moveTo(endPoint.x, endPoint.y);
+              const offset:number = x<halfWidth ? -1 : 1;
+              //ctx.lineTo(x, endPoint.y+20);
+              const index_for_offset:number=2;
+              const left_offset = index>index_for_offset ? index<4? -0.18*screen_size.width: -0.19*screen_size.width : 0;
+              const top_offset = index>1 ? 0.2*screen_size.height : 0.128389261744966443*screen_size.height;
+            
+              const thickness:number=0.0050335570469798654*screen_size.height;
+              ctx.fillRect(x+left_offset, endPoint.y+top_offset, Math.abs(endPoint.x-x),thickness);
+  
+              //const l:any = chart.canvas.style.backgroundColor="green";
+              //console.log(l);
+  
+              ctx.strokeStyle = color[index];
+              //ctx.strokeRect(endPoint.x, endPoint.y, 20, 5)
+              ctx.stroke();
+              const texte = chart.data.labels?.at(index) as string;
+              const textWidth = ctx.measureText(texte);
+              ctx.font="20px Arial";
+              ctx.fillStyle='black';
+              const text_x = index>index_for_offset ? x+left_offset-(textWidth.width)+10 : endPoint.x;
+              const text_y:number =  endPoint.y+top_offset+(0.0120*screen_size.height);
+              ctx.fillText(texte,text_x, text_y);
+             
+  
+            
+            });
           });
-        });
+        }
+        
       },
     };
     this.chart = new Chart('MyChart', {
@@ -223,10 +278,11 @@ this.countryData.sort((a, b) => {
 
       options: {
         layout: {
-          padding: 80, //25,
+          padding: padding_offset, //25,
         },
         responsive: true,
-        maintainAspectRatio: false,
+        maintainAspectRatio: label_enabled,
+        aspectRatio:label_enabled?screen_size.aspect_ratio:1,
 
         plugins: {
           datalabels: {
@@ -283,7 +339,7 @@ this.countryData.sort((a, b) => {
           },
 
           legend: {
-            display: false,
+            display: label_enabled,
             labels: {
               color: 'rgb(0, 0, 0)',
             },

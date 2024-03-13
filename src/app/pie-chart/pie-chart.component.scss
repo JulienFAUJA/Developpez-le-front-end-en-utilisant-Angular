@@ -1,36 +1,102 @@
-@media screen and (max-width: 768px) {
-  .chart-container {
-    position: relative;
-    height: 60vh;
-    width: 90vh;
-    margin: auto;
-    padding: 0;
+$smallest_value:85vh;
+$biggest_value:95vh;
+// Définition des variables
+$defaultHeight: $smallest_value;
+$defaultWidth: $biggest_value;
+$landscapeHeight: $biggest_value;
+$landscapeWidth: $smallest_value;
+$aquaColor: aqua;
+$blueColor: blue;
+$redColor: red;
+$greenColor:green;
+
+// Point de rupture pour les écrans de petite taille (mobile)
+$smallScreen: 768px;
+
+// Mixin pour les styles communs
+@mixin commonStyles {
+  position: relative;
+
+  margin: auto;
+  padding: 0;
+}
+
+// Mixin pour les styles en fonction de la densité de pixels et de l'orientation
+@mixin resolutionStyles($density, $height, $width, $backgroundColor: null) {
+  @media screen and (min-resolution: #{$density}dppx) {
+    @include commonStyles;
+
+    @if $backgroundColor {
+      background-color: $backgroundColor;
+    }
+
+    @media screen and (orientation: landscape) {
+      height: calc(80dvh*$density);
+      width:calc(100dvw*$density);
+    }
+    @media screen and (orientation: portrait) {
+      height:calc(80dvh*$density);
+      width: calc(100dvw*$density);
+    }
   }
 }
 
-@media screen and (min-width: 769px) and (max-width: 1024px) {
-  .chart-container {
-    position: relative;
-    height: 70vh;
-    width: 95vh;
-    margin: auto;
-    padding: 0;
-  }
+// Utilisation des mixins pour définir les styles
+.chart-container {
+  position: relative;
+aspect-ratio: 2.8;
+margin: auto;
+
+
+
+ 
 }
-
-@media screen and (min-width: 1025px) {
-  .chart-container {
-    position: relative;
-    height: 60vh;
-    width: 90vh;
-    margin: auto;
-    padding: 0;
-  }
-}
-
-
-
 .MyChart {
 
 
 }
+
+/*
+.chart-container {
+  position: relative;
+  height: 70vh;
+  width: 95vh;
+  margin: auto;
+  padding: 0;
+
+  @media screen and (min-resolution: 2dppx) {
+      // Pour les écrans avec une densité de pixels de 2x 
+      height: 70vh;
+      width: 95vh;
+      @media screen and (orientation: landscape){
+        height: 95vh;
+        width: 70vh;
+      }
+      background-color: aqua;
+  }
+
+  @media screen and (min-resolution: 3dppx) {
+      // Pour les écrans avec une densité de pixels de 3x 
+      height: 70vh;
+      width: 95vh;
+      @media screen and (orientation: landscape){
+        height: 95vh;
+        width: 70vh;
+      }
+      background-color: blue;
+  }
+
+  @media screen and (min-resolution: 4dppx) {
+      // Pour les écrans avec une densité de pixels de 4x 
+      height: 70vh;
+      width: 95vh;
+      @media screen and (orientation: landscape){
+        height: 95vh;
+        width: 70vh;
+      }
+  }
+}
+
+
+
+*/

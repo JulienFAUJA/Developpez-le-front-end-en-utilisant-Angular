@@ -4,13 +4,111 @@ $border_vert_turquoise: 2px solid $vert_turquoise;
 $border_vert_turquoise_btn: 1px solid $vert_turquoise_darken30;
 $border_radius1: 5px;
 $block_padding: 5px;
-html, body{
-  
-  width: 100%;
-  height: 100;
-  padding: 10px;
-  margin: 0;
+
+// Tailles courantes
+
+$s1920: 1920px;
+$s1366: 1366px;
+$s1280: 1280px;
+$s1080: 1080px;
+$s1024: 1024px;
+$s915: 915px;
+$s768: 768px;
+$s412: 412px;
+
+// Les téléphones sont pris en portrait pour l'initialisation des variables
+
+$iPhoneSE_device_w: 375px;
+$iPhoneSE_device_h: 667px;
+
+$iPhoneXR_device_w: 414px;
+$iPhoneXR_device_h: 896px;
+
+$iPhone12Pro_device_w: 390px;
+$iPhone12Pro_device_h: 844px;
+
+$iPhone14ProMax_device_w: 430px;
+$iPhone14ProMax_device_h: 932px;
+
+$Pixel7_device_w: $s412;
+$Pixel7_device_h: $s915;
+
+$S8p_device_w: 360px;
+$S8p_device_h: 740px;
+
+$S20u_device_w: $s412;
+$S20u_device_h: $s915;
+
+$iPadMini_device_w: $s768;
+$iPadMini_device_h: $s1024;
+
+$iPadAir_device_w: 820px;
+$iPadAir_device_h: 1180px;
+
+$iPadPro_device_w: $s1024;
+$iPadPro_device_h: $s1366;
+
+$SurfacePro7_device_w: 912px;
+$SurfacePro7_device_h: 1368px;
+
+$SurfaceDuo_device_w: 540px;
+$SurfaceDuo_device_h: 720px;
+
+$GalaxyFold_device_w: 280px;
+$GalaxyFold_device_h: 653px;
+
+$AsusZenbookFold_device_w: 853px;
+$AsusZenbookFold_device_h: $s1280;
+
+$GalaxyA51_71_device_w: 412px;
+$GalaxyA51_71_device_h: 914px;
+
+// Pas de portrait
+
+$NestHub_device_w: $s1024;
+$NestHub_device_h: 600px;
+
+$NestHubMax_device_w: $s1280;
+$NestHubMax_device_h: 800px;
+
+// Appareils courants
+$responsive_device_w: $s1920;
+$responsive_device_h: $s1080;
+
+$laptop_device_w: $s1366;
+$laptop_device_h: $s768;
+// Mixin pour les média queries en fonction de la densité de pixels (dppx) et des tailles d'écran
+@mixin responsive(
+  $device-width,
+  $device-height,
+  $dppx: 1,
+  $orientation: null
+) {
+  // Convertir les tailles d'écran en valeurs en pixels
+  $width: if(unit($device-width) == px, $device-width, $device-width + px);
+  $height: if(unit($device-height) == px, $device-height, $device-height + px);
+
+  // Calculer les tailles en fonction de la densité de pixels
+  $width: $width / $dppx;
+  $height: $height / $dppx;
+
+  // Média query pour les écrans de densité de pixels spécifiée
+  @media screen and (min-resolution: #{$dppx}dppx) {
+    @if $orientation == null {
+      // Média query pour tous les appareils
+      @media screen and (min-width: #{$width}) and (min-height: #{$height}) {
+        @content;
+      }
+    } @else {
+      // Média query pour les appareils avec une orientation spécifique
+      @media screen and (min-width: #{$width}) and (min-height: #{$height}) and (orientation: #{$orientation}) {
+        @content;
+      }
+    }
+  }
 }
+
+
 // Définition du mixin
 @mixin titleBlockStyle {
   background-color: $vert_turquoise;
@@ -36,12 +134,58 @@ html, body{
   border-radius: $border_radius1;
   padding: $block_padding;
 }
+
+// Mixin pour les styles en fonction de la densité de pixels et de l'orientation
+@mixin resolutionStyles($density, $height, $width, $backgroundColor: null) {
+  @media screen and (min-resolution: #{$density}dppx) {
+    height: calc($height * $density);
+    width: calc(100dvw * $density);
+
+    @if $backgroundColor {
+      background-color: $backgroundColor;
+    }
+
+    @media screen and (orientation: landscape) {
+      height: calc($height * $density);
+      width: calc(100dvw * $density);
+      @media screen and (width: 1368px) {
+        height: 15vh;
+        width: 100vw;
+      }
+    }
+    @media screen and (orientation: portrait) {
+      height: 15vh;
+      width: 100vw;
+
+      /*height:calc($height*$density);
+      width: calc(100dvw*$density);*/
+    }
+  }
+}
+$defaultHeight: 15dvh;
+$defaultWidth: 100dvw;
+#container {
+  position: fixed;
+  height: auto; // Ajustement de la hauteur en fonction du contenu
+  width: 100dvw;
+    // Media queries pour la gestion responsive
+    @media screen and (max-width: 768px) {
+      width: 100%; // Largeur pleine pour les écrans étroits (mobile)
+    }
+
+
+  
+
+
+  padding: 0;
+  margin: 0;
+}
+
 .header_blocks {
   display: flexbox;
   margin: 0 auto;
   width: fit-content;
-  margin-bottom: 5%;
-  
+  margin-bottom: 1%;
 }
 .title {
   @include titleBlockStyle;
@@ -54,7 +198,6 @@ html, body{
   @include dataValueBlockStyle;
   width: fit-content;
   padding: 0 10px;
-  
 }
 
 .header_title {
