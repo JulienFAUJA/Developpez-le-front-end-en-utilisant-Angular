@@ -6,7 +6,7 @@ import {
   OnInit,
   SimpleChanges,
 } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import Chart from 'chart.js/auto';
 import annotationPlugin from 'chartjs-plugin-annotation';
 import { Observable, of } from 'rxjs';
@@ -92,12 +92,17 @@ export class DetailComponent implements OnInit {
 
   constructor(
     private olympicService: OlympicService,
+    private router: Router,
     private route: ActivatedRoute
   ) {}
 
   get_data(countryId: number) {
     this.olympicService.getOlympics().subscribe((data: Olympic[]) => {
       console.log('countryId:', countryId);
+      if(countryId<1 ||countryId>data.length){
+        const new_id:number=(countryId%10)+1;
+        this.router.navigateByUrl('/overflow/' + new_id);
+      }
       this.country = data[countryId];
       console.log('this.country:', this.country);
       this.countryName = this.country.country;

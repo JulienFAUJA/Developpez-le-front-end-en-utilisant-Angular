@@ -1,0 +1,53 @@
+[
+    {
+      "id": 1,
+      "country": "Terre du Milieu",
+      "phrase": "Tu croyais que cet id était réservé pour la Terre du Milieu ? Ils ne se sont pas qualifiés, ils se sont fait Saquet."
+    },
+    {
+      "id": 2,
+      "country": "Pandora",
+      "phrase": "Cet id était pour Pandora, mais ils sont restés dans l'équipe bleue."
+    },
+    {
+      "id": 3,
+      "country": "Poudlard",
+      "phrase": "Cet id était pour Poudlard, mais ils ont triché au tirage au 'sort'."
+    },
+    {
+      "id": 4,
+      "country": "Wakanda",
+      "phrase": "Wakanda a réclamé cet id, mais ils se sont retirés pour protéger leur technologie."
+    },
+    {
+      "id": 5,
+      "country": "Tatooine",
+      "phrase": "Tatooine avait cet id, mais ils ont perdu en essayant de se qualifier par la FORCE."
+    },
+    {
+      "id": 6,
+      "country": "Narnia",
+      "phrase": "Cet id appartenait à Narnia, mais ils se sont perdus dans le placard."
+    },
+    {
+      "id": 7,
+      "country": "Gallifrey",
+      "phrase": "Gallifrey a réclamé cet id, mais ils ont été retardés par une anomalie temporelle."
+    },
+    {
+      "id": 8,
+      "country": "Westeros",
+      "phrase": "Westeros ne sont pas venus, ils ne voulaient pas monter sur le podium, seulement sur le trône."
+    },
+    {
+        "id": 9,
+        "country": "Asgard",
+        "phrase": "Asgard a revendiqué cet id, mais ils ont été distraits par une querelle de famille entre les dieux."
+      },
+      {
+        "id": 10,
+        "country": "Atlantis",
+        "phrase": "cet id était pour Atlantis, mais ils ont été vaincus par les marées du destin."
+      }
+  ]
+  
