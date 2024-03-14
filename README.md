@@ -20,9 +20,9 @@
 ## Introduction
 
 Cette application permet de visualiser les statistiques des derniers Jeux Olympiques pour chaque pays, en fournissant des détails sur les médailles et le nombre d'athlètes pour un pays spécifique.
-Elle est créée avec **[Angular](#angular)** qui est un **[Framework](#framework)** pour **[Javascript](#javascript)**  écrit en **[Typescript](#typescript)** .
+Elle est créée avec **[Angular](#angular)** qui est un **[Framework](#framework)** pour **[Javascript](#javascript)** écrit en **[Typescript](#typescript)** .
 
-#### Quelques brèves explications
+#### :information_source: Quelques brèves explications
 
 Pour communiquer avec notre ordinateur nous avons besoin de parler la même langue que lui. J'anticipe votre question:
 
@@ -46,9 +46,7 @@ Il y en a d'autres mais ce sont les plus courants et les plus simples à apprend
 
 **Et Typecript ?**
 
-**[Typescript](#typescript)**, Il faut voir ça comme un patois du  **[Javascript](#javascript)** (_pour rester sur le thème des langues_).
-
-:ng:
+**[Typescript](#typescript)**, Il faut voir ça comme un patois du **[Javascript](#javascript)** (_pour rester sur le thème des langues_).
 
 ---
 
@@ -57,6 +55,34 @@ Il y en a d'autres mais ce sont les plus courants et les plus simples à apprend
 Ce projet a été généré avec [Angular CLI](https://github.com/angular/angular-cli) version 14.1.3.
 
 N'oubliez pas d'installer vos `node_modules` avant de commencer (`npm install`).
+
+#### :information_source: Quelques brèves explications
+
+**npm install** : C'est une commande utilisée dans Node.js pour installer les dépendances d'un projet à partir du registre npm (Node Package Manager). Lorsque vous exécutez npm install, npm recherche le fichier package.json dans le répertoire actuel, puis installe toutes les dépendances répertoriées dans ce fichier, ainsi que leurs dépendances récursives.
+
+**node_modules** : C'est un répertoire généré par npm qui contient toutes les dépendances installées pour un projet. Chaque dépendance est installée dans son propre répertoire à l'intérieur de node_modules. il peut être reconstruit à tout moment en utilisant le fichier package.json.
+
+**package.json** : C'est un fichier de configuration utilisé dans les projets Node.js pour définir les métadonnées du projet ainsi que ses dépendances et scripts. Il contient des informations telles que le nom du projet, la version, la description, les auteurs, les licences, les dépendances nécessaires pour le projet, et bien plus encore. C'est également l'endroit où vous pouvez déclarer des scripts personnalisés pour automatiser des tâches de développement courantes.
+
+**package-lock.json** (ou yarn.lock) : Ce fichier est généré automatiquement par npm (ou Yarn) pour verrouiller les versions exactes des dépendances installées dans un projet. Il garantit que les versions des dépendances sont cohérentes entre différentes installations et permet une reproductibilité précise des installations. Le fichier package-lock.json (ou yarn.lock) est utilisé pour s'assurer que les versions des dépendances ne changent pas accidentellement entre les installations, ce qui pourrait entraîner des incohérences dans le projet.
+
+#### Quelques astuces
+
+##### :x: Problème avec une dépendance
+
+Si vous souhaitez supprimer une dépendance (proprement) de votre projet suivez ces étapes:
+
+1. Supprimez le dossier **node_modules**
+2. Supprimez le fichier **package-lock.json**
+3. Apportez vos modification au fichier **package.json** comme par exemple supprimer la ligne d'une dépendance que vous ne voulez plus.
+4. Lancez la commande `npm install`
+
+##### :ng: Angular CLI
+
+**Créer une application**:Angular CLI permet de créer facilement une nouvelle application Angular en utilisant la commande `ng new`. Cette commande génère une structure de projet initiale avec tous les fichiers et dossiers nécessaires pour démarrer le développement.
+**Créer un component**:Pour créer un nouveau composant Angular, vous pouvez utiliser la commande `ng generate component` (ou `ng g c` pour faire court). Cette commande génère automatiquement les fichiers nécessaires pour votre composant, y compris le fichier TypeScript, le fichier HTML, le fichier de style CSS ou SCSS, ainsi que les fichiers de test.
+**Créer une directive**:Angular CLI simplifie la création de directives personnalisées avec la commande `ng generate directive` (ou `ng g d`). Cette commande crée les fichiers TypeScript nécessaires pour votre directive, ainsi que les fichiers de test associés.
+**Créer un service**:Les services sont des éléments clés de toute application Angular. Pour créer un nouveau service, utilisez la commande `ng generate service` (ou `ng g s`). Cette commande génère le fichier TypeScript pour votre service, ainsi que les fichiers de test associés.
 
 ---
 
@@ -69,7 +95,7 @@ Exécutez `ng serve` pour démarrer le serveur de développement. Accédez à `h
 ## :construction: Construction
 
 Exécutez `ng build` pour construire le projet. Les artefacts de construction seront stockés dans le répertoire `dist/`.
-[![forthebadge](https://forthebadge.com/images/badges/works-on-my-machine.svg)](https://forthebadge.com) 
+[![forthebadge](https://forthebadge.com/images/badges/works-on-my-machine.svg)](https://forthebadge.com)
 
 ---
 
@@ -77,37 +103,122 @@ Exécutez `ng build` pour construire le projet. Les artefacts de construction se
 
 Comme vous pouvez le constater, une architecture a déjà été définie pour le projet. Il s'agit simplement d'une suggestion, vous pouvez choisir d'utiliser la vôtre. L'architecture prédéfinie comprend (en plus de l'architecture angular par défaut) les éléments suivants :
 
-### - `components`
+### `components`
 
 dossier : contient tous les composants réutilisables
 
-### - `pages`
+### `pages`
 
 dossier : contient les composants utilisés pour le routage
 
-#### - Page d'accueil
+**accueil**
 
 La page d'accueil
 
-#### - Page de détails
+**détails**
 
 Page spécifique au pays
 
-#### - Page d'erreur [![forthebadge](https://forthebadge.com/images/badges/uh-oh-404-no-pages-or-badges.svg)](https://forthebadge.com)
+**erreur** [![forthebadge](https://forthebadge.com/images/badges/uh-oh-404-no-pages-or-badges.svg)](https://forthebadge.com)
 
-### - `core`
+### `core`
 
 dossier : contient la logique métier (dossiers `services` et `models`)
 
-#### - services [![forthebadge](https://forthebadge.com/images/badges/you-didnt-ask-for-this.svg)](https://forthebadge.com)
+**services** [![forthebadge](https://forthebadge.com/images/badges/you-didnt-ask-for-this.svg)](https://forthebadge.com)
 
 Les services de l'application (ici le service Olympic seulement)
 
-#### - models [![forthebadge](https://forthebadge.com/images/badges/for-you.svg)](https://forthebadge.com)
+**OlympicService**
 
-Les modèles utilisés pour l'application.
+```typescript
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { BehaviorSubject, Observable, throwError } from "rxjs";
+import { catchError, tap } from "rxjs/operators";
+import { Olympic } from "../models/Olympic";
 
-#### - Les Routes
+@Injectable({
+  providedIn: "root",
+})
+export class OlympicService {
+  private olympicUrl = "./assets/mock/olympic.json";
+  private olympics$ = new BehaviorSubject<Olympic[]>([]);
+
+  constructor(private http: HttpClient) {}
+
+  // Charge les données initiales
+  loadInitialData(): Observable<Olympic[]> {
+    return this.http.get<Olympic[]>(this.olympicUrl).pipe(
+      tap((olympics) => this.olympics$.next(olympics)),
+      catchError((error) => {
+        console.error(error);
+        this.olympics$.next([]); // Réinitialise les données en cas d'erreur
+        return throwError(error); // Propage l'erreur
+      })
+    );
+  }
+
+  // Obtient les données olympiques
+  getOlympics(): Observable<Olympic[]> {
+    return this.olympics$.asObservable();
+  }
+}
+```
+
+**models** [![forthebadge](https://forthebadge.com/images/badges/for-you.svg)](https://forthebadge.com)
+
+Les modèles (Interfaces) utilisés pour l'application.
+
+**Olympic**
+
+```typescript
+import { Participation } from "./Participation";
+
+export interface Olympic {
+  id: number;
+  country: string;
+  participations: Participation[];
+}
+```
+
+**Participation**
+
+```typescript
+export interface Participation {
+  id: number;
+  year: number;
+  city: string;
+  medalsCount: number;
+  athleteCount: number;
+}
+```
+
+**Point**
+
+```typescript
+export interface Point {
+  x: number;
+  y: number;
+}
+```
+
+**Size(s)**
+
+```typescript
+export interface Size1 {
+  width: number;
+  height: number;
+}
+
+export interface Size {
+  width: number;
+  height: number;
+  aspect_ratio: number;
+}
+```
+
+#### Les routes
 
 Voici les routes présentes dans l'application :
 
@@ -130,22 +241,25 @@ Bonne chance !
 ---
 
 #### Angular
+
 <div id="angular">
 Angular est un framework open-source développé et maintenu par Google, utilisé pour construire des applications web à grande échelle. Il s'appuie sur TypeScript, un sur-ensemble de JavaScript, et suit le modèle de conception MVC (Modèle-Vue-Contrôleur) ou plus précisément le modèle MVVM (Modèle-Vue-Modèle).
 </div>
 
 #### Framework
+
 <div id="framework">
 Un Framework (cadre de travail, ou cadriciel dans d'autres pays Francophones comme au Canada) est un ensemble structuré d'outils, de composants et de conventions de programmation conçus pour faciliter le développement d'applications logicielles. Les frameworks fournissent un cadre de travail standardisé qui permet aux développeurs de construire, déployer et maintenir des applications plus rapidement et efficacement en réutilisant des solutions prédéfinies pour des problèmes courants.
 </div>
 
 #### Javascript
+
 <div id="javascript">
 JavaScript est un langage de programmation de haut niveau, orienté objet et principalement utilisé pour le développement web côté client. JavaScript est un langage de programmation polyvalent et puissant, largement utilisé dans le développement web pour créer des applications interactives et dynamiques. Sa simplicité, sa flexibilité et son écosystème riche en font l'un des langages les plus populaires et les plus demandés dans l'industrie du développement logiciel.
 </div>
 
 #### Typescript
+
 <div id="typescript">
 TypeScript est un langage de programmation open source développé par Microsoft. Il s'agit d'un sur-ensemble de JavaScript qui ajoute des fonctionnalités de typage statique optionnel, ce qui signifie que vous pouvez spécifier le type de données des variables, des paramètres de fonction, des propriétés d'objet, etc.
 </div>
-

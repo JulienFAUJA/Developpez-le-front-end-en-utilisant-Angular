@@ -5,9 +5,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './pages/home/home.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
-import { PieChartComponent } from './pie-chart/pie-chart.component';
-import { LineChartComponent } from './line-chart/line-chart.component';
+import { LineChartComponent } from './components/line-chart/line-chart.component';
 import { DetailComponent } from './pages/detail/detail.component';
+import { PieChartComponent } from './components/pie-chart/pie-chart.component';
 
 @NgModule({
   declarations: [

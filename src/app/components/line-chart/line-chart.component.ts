@@ -12,7 +12,7 @@ import annotationPlugin from 'chartjs-plugin-annotation';
 import { Observable, of } from 'rxjs';
 import { Olympic } from 'src/app/core/models/Olympic';
 import { OlympicService } from 'src/app/core/services/olympic.service';
-import { Participation } from '../core/models/Participation';
+import { Participation } from '../../core/models/Participation';
 
 @Component({
   selector: 'app-line-chart',
@@ -78,10 +78,10 @@ export class LineChartComponent implements OnInit {
       console.log('country (lineChartComponent):', this.country);
       this.participations = this.country.participations;
     } catch (error) {
-      console.log("erreur : ", error);
+      console.log('erreur : ', error);
       const countryId = +this.route.snapshot.params['id'];
     }
-    
+
     this.createChart();
   }
 
