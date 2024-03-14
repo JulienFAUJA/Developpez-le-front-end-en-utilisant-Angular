@@ -21,7 +21,7 @@ Chart.register(annotationPlugin);
   templateUrl: './detail.component.html',
   styleUrls: ['./detail.component.scss'],
 })
-export class DetailComponent implements OnInit, OnChanges, OnDestroy {
+export class DetailComponent implements OnInit {
   public chart: any;
   public font_size: number = 22;
   countryName!: string;
@@ -123,29 +123,14 @@ export class DetailComponent implements OnInit, OnChanges, OnDestroy {
       console.log(`Total des médailles du pays:`, this.totalNumberOfMedals);
       console.log(`Total des athlètes du pays:`, this.totalNumberOfAthletes);
     });
-    this.createChart();
+    //this.createChart();
   }
   ngOnInit() {
     const countryId = +this.route.snapshot.params['id'];
     this.get_data(countryId);
   }
 
-  ngOnDestroy(): void {
-    // Détruit le graphique pour libérer le canvas lorsque le composant est détruit
-    if (this.chart) {
-      this.chart.destroy();
-      this.chart = null;
-    }
-  }
+ 
 
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log('mes data parsées:');
-    if (changes['participations']) {
-      if (this.chart) {
-        this.chart.destroy();
-        this.chart = null;
-      }
-      this.createChart(); // Recréez le graphique avec les nouvelles données
-    }
-  }
+ 
 }

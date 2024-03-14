@@ -8,10 +8,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import Chart from 'chart.js/auto';
-import annotationPlugin from 'chartjs-plugin-annotation';
-import { Observable, of } from 'rxjs';
 import { Olympic } from 'src/app/core/models/Olympic';
-import { OlympicService } from 'src/app/core/services/olympic.service';
 import { Participation } from '../../core/models/Participation';
 
 @Component({
@@ -23,10 +20,16 @@ export class LineChartComponent implements OnInit {
   public chart: any;
   public font_size: number = 22;
   participations!: Participation[];
-  public olympics$: Observable<any> = of(null);
   @Input() country!: Olympic;
 
   createChart() {
+    try {
+      console.log('country (lineChartComponent):', this.country);
+      this.participations = this.country.participations;
+    } catch (error) {
+      console.log('erreur : ', error);
+    }
+
     if (this.chart) {
       this.chart.destroy(); // Détruit le graphique existant s'il y en a un
     }
@@ -68,20 +71,11 @@ export class LineChartComponent implements OnInit {
     });
   }
 
-  constructor(
-    private olympicService: OlympicService,
+  constructor(   
     private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
-    try {
-      console.log('country (lineChartComponent):', this.country);
-      this.participations = this.country.participations;
-    } catch (error) {
-      console.log('erreur : ', error);
-      const countryId = +this.route.snapshot.params['id'];
-    }
-
     this.createChart();
   }
 
@@ -94,7 +88,7 @@ export class LineChartComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['country']) {
+    if (changes['country'] || changes['participations']) {
       if (this.chart) {
         this.chart.destroy();
         this.chart = null;

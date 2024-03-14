@@ -41,7 +41,6 @@ $smallScreen: 768px;
   }
 }
 
-// Utilisation des mixins pour définir les styles
 .chart-container {
   position: relative;
 aspect-ratio: 2.8;
@@ -51,52 +50,3 @@ margin: auto;
 
  
 }
-.MyChart {
-
-
-}
-
-/*
-.chart-container {
-  position: relative;
-  height: 70vh;
-  width: 95vh;
-  margin: auto;
-  padding: 0;
-
-  @media screen and (min-resolution: 2dppx) {
-      // Pour les écrans avec une densité de pixels de 2x 
-      height: 70vh;
-      width: 95vh;
-      @media screen and (orientation: landscape){
-        height: 95vh;
-        width: 70vh;
-      }
-      background-color: aqua;
-  }
-
-  @media screen and (min-resolution: 3dppx) {
-      // Pour les écrans avec une densité de pixels de 3x 
-      height: 70vh;
-      width: 95vh;
-      @media screen and (orientation: landscape){
-        height: 95vh;
-        width: 70vh;
-      }
-      background-color: blue;
-  }
-
-  @media screen and (min-resolution: 4dppx) {
-      // Pour les écrans avec une densité de pixels de 4x 
-      height: 70vh;
-      width: 95vh;
-      @media screen and (orientation: landscape){
-        height: 95vh;
-        width: 70vh;
-      }
-  }
-}
-
-
-
-*/

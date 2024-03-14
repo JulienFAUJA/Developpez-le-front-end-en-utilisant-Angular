@@ -1,0 +1,21 @@
+// Utilisation des mixins pour définir les styles
+.chart-container {
+    position: relative;
+  margin: 0;
+  padding: 10px;
+  height: auto;
+  width: 100%;
+  
+  
+  
+   
+  }
+  #MyChartLine {
+    position: absolute;
+    margin: 0;
+    padding: 10px;
+    padding-bottom: 10%;
+    height: auto;
+    width: 100%;
+  
+  }

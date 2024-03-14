@@ -299,10 +299,13 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
           const page_id: number = self.countryData[position.id].id - 1;
           console.log('country:',self.countryData[position.id].country, 'id:', page_id,'index:', position.id);
           self.router.navigateByUrl('/detail/' + page_id);
-         
-          break;
+         event.stopPropagation();
+         chart.clear();
+        
+          return;
         }
-        console.log('click:', clickX, clickY, textPositions);
+        //console.log('click:', clickX, clickY, textPositions);
+        
       }
       
                 
