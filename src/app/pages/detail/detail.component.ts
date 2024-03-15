@@ -22,8 +22,6 @@ Chart.register(annotationPlugin);
   styleUrls: ['./detail.component.scss'],
 })
 export class DetailComponent implements OnInit {
-  public chart: any;
-  public font_size: number = 22;
   countryName!: string;
   country!: Olympic;
   totalNumberOfMedals!: number;
@@ -32,63 +30,7 @@ export class DetailComponent implements OnInit {
   participations!: Participation[];
   public olympics$!: Observable<Olympic[]>;
 
-  createChart() {
-    this.chart = new Chart('MyChartLine', {
-      type: 'line',
 
-      data: {
-        xLabels: [this.participations.map((value) => value.year)],
-        yLabels: [this.participations.map((value) => value.medalsCount)],
-
-        datasets: [
-          {
-            data: [this.participations.map((value) => value.medalsCount)],
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        aspectRatio: 3.0,
-        plugins: {
-          legend: {
-            display: false,
-            labels: {
-              color: 'rgb(255, 99, 132)',
-            },
-          },
-
-          annotation: {
-            annotations: {
-              label1: {
-                type: 'label',
-                xValue: 100,
-                xAdjust: 150,
-                yValue: 0,
-                yAdjust: -170,
-                backgroundColor: 'rgba(255,255,255, 0)',
-                content: ['______ '],
-                font: {
-                  size: this.font_size,
-                },
-              },
-              label2: {
-                type: 'label',
-                xValue: 100,
-                xAdjust: 250,
-                yValue: 10,
-                yAdjust: -100,
-                backgroundColor: 'rgba(255,255,255, 0)',
-                content: ['__________ '],
-                font: {
-                  size: this.font_size,
-                },
-              },
-            },
-          },
-        },
-      },
-    });
-  }
 
   constructor(
     private olympicService: OlympicService,
@@ -98,13 +40,14 @@ export class DetailComponent implements OnInit {
 
   get_data(countryId: number) {
     this.olympicService.getOlympics().subscribe((data: Olympic[]) => {
-      console.log('countryId:', countryId);
-      if(countryId>data.length){
-        const new_id:number=(countryId%10)+1;
-        this.router.navigateByUrl('/**/' + new_id);
+      if(typeof countryId !== 'number'){
+        this.router.navigateByUrl('/**/' + countryId);
       }
+      if(countryId>data.length){
+        countryId=0;
+      }
+     
       this.country = data[countryId];
-      console.log('this.country:', this.country);
       this.countryName = this.country.country;
       this.participations = this.country.participations;
       this.numberOfParticipations = new Set(
@@ -121,12 +64,8 @@ export class DetailComponent implements OnInit {
         0
       );
 
-      console.log(`Nom du pays: ${this.countryName}`);
-      console.log(
-        `Nombre de participations aux JO: ${this.numberOfParticipations}`
-      );
-      console.log(`Total des médailles du pays:`, this.totalNumberOfMedals);
-      console.log(`Total des athlètes du pays:`, this.totalNumberOfAthletes);
+
+
     });
   }
   ngOnInit() {

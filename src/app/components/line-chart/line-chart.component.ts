@@ -1,8 +1,6 @@
 import {
   Component,
   Input,
-  OnChanges,
-  OnDestroy,
   OnInit,
   SimpleChanges,
 } from '@angular/core';
@@ -48,6 +46,7 @@ export class LineChartComponent implements OnInit {
             borderColor: 'rgba(255, 99, 132, 1)', // Couleur de la bordure
             borderWidth: 4, // Largeur de la bordure
             fill: false, // Ne pas remplir l'aire sous la ligne
+            
           },
         ],
       },
