@@ -79,10 +79,14 @@ Si vous souhaitez supprimer une dépendance (proprement) de votre projet suivez 
 
 ##### :ng: Angular CLI
 
-**Créer une application**:Angular CLI permet de créer facilement une nouvelle application Angular en utilisant la commande `ng new` + nom_de_votre_projet. Cette commande génère une structure de projet initiale avec tous les fichiers et dossiers nécessaires pour démarrer le développement.
-**Créer un component**:Pour créer un nouveau composant Angular, vous pouvez utiliser la commande `ng generate component` + nom_de_votre_component (ou `ng g c` pour faire court). Cette commande génère automatiquement les fichiers nécessaires pour votre composant, y compris le fichier TypeScript, le fichier HTML, le fichier de style CSS ou SCSS, ainsi que les fichiers de test.
-**Créer une directive**:Angular CLI simplifie la création de directives personnalisées avec la commande `ng generate directive` + nom_de_votre_directive (ou `ng g d`). Cette commande crée les fichiers TypeScript nécessaires pour votre directive, ainsi que les fichiers de test associés.
-**Créer un service**:Les services sont des éléments clés de toute application Angular. Pour créer un nouveau service, utilisez la commande `ng generate service` + nom_de_votre_service (ou `ng g s`). Cette commande génère le fichier TypeScript pour votre service, ainsi que les fichiers de test associés.
+**Créer une application**:Angular CLI permet de créer facilement une nouvelle application Angular en utilisant la commande:
+ `ng new` + nom_de_votre_projet. Cette commande génère une structure de projet initiale avec tous les fichiers et dossiers nécessaires pour démarrer le développement.
+**Créer un component**:Pour créer un nouveau composant Angular, vous pouvez utiliser la commande:
+ `ng generate component` + nom_de_votre_component (ou `ng g c` pour faire court). Cette commande génère automatiquement les fichiers nécessaires pour votre composant, y compris le fichier TypeScript, le fichier HTML, le fichier de style CSS ou SCSS, ainsi que les fichiers de test.
+**Créer une directive**:Angular CLI simplifie la création de directives personnalisées avec la commande:
+ `ng generate directive` + nom_de_votre_directive (ou `ng g d`). Cette commande crée les fichiers TypeScript nécessaires pour votre directive, ainsi que les fichiers de test associés.
+**Créer un service**:Les services sont des éléments clés de toute application Angular. Pour créer un nouveau service, utilisez la commande:
+ `ng generate service` + nom_de_votre_service (ou `ng g s`). Cette commande génère le fichier TypeScript pour votre service, ainsi que les fichiers de test associés.
 
 ---
 
@@ -106,6 +110,14 @@ Ci-dessous l'architecture du projet:
 ### `components`
 
 dossier : contient tous les composants réutilisables
+
+Les components sont au nombre de deux. Tous les deux sont des composants représentant un graphique qui utilise la bibliothèque "Chart.js". 
+
+>Attention: Il vous arrivera parfois d'entendre ou de lire le terme **Librairie** (*ou Library*) pour parler d'une bibliothèque mais sachez que le terme Library est un terme Anglophone et l'utiliser en Français est un abus de langage. 
+
+
+Le pie-chart component qui est la représentation dîte : "Camembert" 
+Le line-chart component qui est la représentation dîte : "Ligne" 
 
 ### `pages`
 
@@ -264,21 +276,6 @@ export interface RectBox {
 ```
 *Garde les valeurs des 4 coins gauche /haut / droite / bas*
 
-#### Les routes
-
-Voici les routes présentes dans l'application :
-
-**route 1**
-
-**route 2**
-
-Je vous suggère de commencer par comprendre ce code de démarrage. Portez une attention particulière au `app-routing.module.ts` et au `olympic.service.ts`.
-
-Une fois maîtrisé, vous devriez continuer en créant les interfaces TypeScript à l'intérieur du dossier `models`. Comme vous pouvez le voir, j'ai déjà créé deux fichiers correspondant aux données incluses dans le `olympic.json`. Avec vos interfaces, améliorez le code en remplaçant chaque `any` par l'interface correspondante.
-
-Vous êtes maintenant prêt à implémenter les fonctionnalités demandées.
-
-Bonne chance !
 
 ---
 
