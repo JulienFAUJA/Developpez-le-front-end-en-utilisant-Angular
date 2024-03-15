@@ -99,9 +99,9 @@ export class DetailComponent implements OnInit {
   get_data(countryId: number) {
     this.olympicService.getOlympics().subscribe((data: Olympic[]) => {
       console.log('countryId:', countryId);
-      if(countryId<1 ||countryId>data.length){
+      if(countryId>data.length){
         const new_id:number=(countryId%10)+1;
-        this.router.navigateByUrl('/overflow/' + new_id);
+        this.router.navigateByUrl('/**/' + new_id);
       }
       this.country = data[countryId];
       console.log('this.country:', this.country);

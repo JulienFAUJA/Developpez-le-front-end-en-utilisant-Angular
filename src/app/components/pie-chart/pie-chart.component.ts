@@ -5,6 +5,7 @@ import {
   OnDestroy,
   OnInit,
   SimpleChanges,
+  createPlatform,
 } from '@angular/core';
 
 import Chart from 'chart.js/auto';
@@ -17,6 +18,7 @@ import { text } from 'body-parser';
 import { TextPosition } from 'src/app/core/models/TextPosition';
 import { Point } from 'src/app/core/models/Point';
 import { Size, Size1 } from 'src/app/core/models/Size';
+import { RectBox } from 'src/app/core/models/RectBox';
 
 Chart.register(annotationPlugin);
 Chart.register(ChartDataLabels);
@@ -185,6 +187,68 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
       }
       console.log(text, val / div);
     }
+
+    function set_text_position(text:string, index:number, tooltipPoint:Point, halfWidth:number, halfHeight:number, rectBox:RectBox): Point{
+      const left_half=tooltipPoint.x<halfWidth ? true:false; 
+      const upper_half = tooltipPoint.y<halfHeight ? true:false;
+      let text_x:number; 
+      let text_y:number; 
+      const offset_value:number = 10;
+      let offset_x:number = index%2==0 ? -offset_value:offset_value;
+      console.log("half_h:", upper_half, text);
+      if(left_half===true){
+        if (index===0 || index===1){
+          text_x = halfWidth+offset_x;
+        }
+        else{
+          text_x =(halfWidth/3)+offset_x;
+        }
+      }
+      else{
+        if (index<=2){
+          text_x = rectBox.right-Math.abs(rectBox.right-halfWidth)/3+offset_x;
+        }
+        else{
+          text_x = halfWidth/4+offset_x;
+        }
+      }
+      if(upper_half===true){
+
+        if (index===0 ){
+          text_y = rectBox.top;
+        }
+        else{
+          text_y = tooltipPoint.y;
+        }
+      }
+      else{
+        switch(index){
+          case 0:
+            text_y =  tooltipPoint.y-5;
+          break;
+          case 1:
+            text_y = tooltipPoint.y;
+          break;
+          case 2:
+            text_y = rectBox.bottom-Math.abs(rectBox.bottom-tooltipPoint.y)/2+5;
+          break;
+          case 3:
+            text_y = rectBox.bottom+5;
+          break;
+          default:
+            text_y = tooltipPoint.y;
+            break;
+        };
+      }
+
+      const textPos:Point = {
+        x:text_x,
+        y:text_y
+      };
+      console.log("textPos:", text, textPos);
+      return textPos;
+    }
+
     // Le this n'est plus pris dans le contexte donc le self me permet d'utiliser le routing depuis le pie
     const self = this;
     const canvas = document.querySelector('canvas');
@@ -235,6 +299,10 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
           chart.data.datasets.forEach((dataset, i) => {
             chart.getDatasetMeta(i).data.forEach((datapoint, index) => {
               const { x, y } = datapoint.tooltipPosition(true);
+              const tooltipPoint:Point = {
+                x:x,
+                y:y
+              };
               const rectBox = {
                 left: left,
                 top: top,
@@ -243,6 +311,8 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
               };
               const halfWidth = width / 2;
               const halfHeight = height / 2;
+              const texte = chart.data.labels?.at(index) as string;
+              const textPos = set_text_position(texte, index, tooltipPoint, halfWidth, halfHeight,rectBox)
 
               const angle = calculateAngle(halfHeight, halfWidth, x, y);
               const color = dataset.backgroundColor as string[];
@@ -251,33 +321,31 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
               const endPoint: Point = GetEndPoint(chart, x, y, angle);
               //console.log('label:',chart.data.labels?.at(index), endPoint,"x:",x);
               ctx.beginPath();
-              ctx.moveTo(endPoint.x, endPoint.y);
+              const textWidth = ctx.measureText(texte);
+              ctx.font = '18px Arial';
+              ctx.fillStyle = 'black';
+              const line_offset_x:number = textPos.x>halfWidth ? 0 : textWidth.width;
+              ctx.moveTo(textPos.x+line_offset_x, textPos.y-5);
               const index_for_offset: number = 2;
               const left_offset = index > index_for_offset ? index < 4 ? -0.18 * screen_size.width : -0.19 * screen_size.width : 0;
               const top_offset = index > 1 ? 0.2 * screen_size.height : 0.128389261744966443 * screen_size.height;
 
               const thickness: number = 0.0050335570469798654 * screen_size.height;
-              ctx.fillRect(
-                x + left_offset,
-                endPoint.y + top_offset,
-                Math.abs(endPoint.x - x),
-                thickness
-              );
+              ctx.lineTo(x, textPos.y-5)
+              //ctx.fillRect(x + left_offset, endPoint.y + top_offset,  Math.abs(endPoint.x - x), thickness);
               ctx.strokeStyle = color[index];
               ctx.stroke();
-              const texte = chart.data.labels?.at(index) as string;
-              const textWidth = ctx.measureText(texte);
-              ctx.font = '18px Arial';
-              ctx.fillStyle = 'black';
+              
+              
               const text_x = index > index_for_offset ? x + left_offset - textWidth.width + 10 : endPoint.x;
               const text_y: number = endPoint.y + top_offset + 0.012 * screen_size.height;
-              ctx.fillText(texte, text_x, text_y);
+              ctx.fillText(texte, textPos.x, textPos.y);
               console.log(texte, text_x, text_y);
 
               // Ajouter la position du texte à l'ensemble
           const position: TextPosition = {
-            x: text_x,
-            y: text_y,
+            x: textPos.x,
+            y: textPos.y,
             width: textWidth.width,
             height: 18, // Hauteur fixe pour l'instant, vous pouvez la modifier selon vos besoins
             name: texte,
