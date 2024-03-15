@@ -128,7 +128,6 @@ export class DetailComponent implements OnInit {
       console.log(`Total des médailles du pays:`, this.totalNumberOfMedals);
       console.log(`Total des athlètes du pays:`, this.totalNumberOfAthletes);
     });
-    //this.createChart();
   }
   ngOnInit() {
     const countryId = +this.route.snapshot.params['id'];

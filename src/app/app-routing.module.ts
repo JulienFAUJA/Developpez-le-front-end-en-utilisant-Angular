@@ -13,10 +13,7 @@ const routes: Routes = [
     path: 'detail/:id', // wildcard
     component: DetailComponent,
   },
-  {
-    path: 'overflow/:id', // wildcard
-    component: NotFoundComponent,
-  },
+
   {
     path: '**', // wildcard
     component: NotFoundComponent,

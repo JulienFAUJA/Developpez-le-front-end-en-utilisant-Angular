@@ -126,6 +126,7 @@ $laptop_device_h: $s768;
   padding: $block_padding;
   color: white;
   font-size: large;
+  text-decoration: none;
 }
 
 // Définition du mixin
@@ -135,33 +136,6 @@ $laptop_device_h: $s768;
   padding: $block_padding;
 }
 
-// Mixin pour les styles en fonction de la densité de pixels et de l'orientation
-@mixin resolutionStyles($density, $height, $width, $backgroundColor: null) {
-  @media screen and (min-resolution: #{$density}dppx) {
-    height: calc($height * $density);
-    width: calc(100dvw * $density);
-
-    @if $backgroundColor {
-      background-color: $backgroundColor;
-    }
-
-    @media screen and (orientation: landscape) {
-      height: calc($height * $density);
-      width: calc(100dvw * $density);
-      @media screen and (width: 1368px) {
-        height: 15vh;
-        width: 100vw;
-      }
-    }
-    @media screen and (orientation: portrait) {
-      height: 15vh;
-      width: 100vw;
-
-      /*height:calc($height*$density);
-      width: calc(100dvw*$density);*/
-    }
-  }
-}
 $defaultHeight: 15dvh;
 $defaultWidth: 100dvw;
 #container {

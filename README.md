@@ -79,10 +79,10 @@ Si vous souhaitez supprimer une dépendance (proprement) de votre projet suivez 
 
 ##### :ng: Angular CLI
 
-**Créer une application**:Angular CLI permet de créer facilement une nouvelle application Angular en utilisant la commande `ng new`. Cette commande génère une structure de projet initiale avec tous les fichiers et dossiers nécessaires pour démarrer le développement.
-**Créer un component**:Pour créer un nouveau composant Angular, vous pouvez utiliser la commande `ng generate component` (ou `ng g c` pour faire court). Cette commande génère automatiquement les fichiers nécessaires pour votre composant, y compris le fichier TypeScript, le fichier HTML, le fichier de style CSS ou SCSS, ainsi que les fichiers de test.
-**Créer une directive**:Angular CLI simplifie la création de directives personnalisées avec la commande `ng generate directive` (ou `ng g d`). Cette commande crée les fichiers TypeScript nécessaires pour votre directive, ainsi que les fichiers de test associés.
-**Créer un service**:Les services sont des éléments clés de toute application Angular. Pour créer un nouveau service, utilisez la commande `ng generate service` (ou `ng g s`). Cette commande génère le fichier TypeScript pour votre service, ainsi que les fichiers de test associés.
+**Créer une application**:Angular CLI permet de créer facilement une nouvelle application Angular en utilisant la commande `ng new` + nom_de_votre_projet. Cette commande génère une structure de projet initiale avec tous les fichiers et dossiers nécessaires pour démarrer le développement.
+**Créer un component**:Pour créer un nouveau composant Angular, vous pouvez utiliser la commande `ng generate component` + nom_de_votre_component (ou `ng g c` pour faire court). Cette commande génère automatiquement les fichiers nécessaires pour votre composant, y compris le fichier TypeScript, le fichier HTML, le fichier de style CSS ou SCSS, ainsi que les fichiers de test.
+**Créer une directive**:Angular CLI simplifie la création de directives personnalisées avec la commande `ng generate directive` + nom_de_votre_directive (ou `ng g d`). Cette commande crée les fichiers TypeScript nécessaires pour votre directive, ainsi que les fichiers de test associés.
+**Créer un service**:Les services sont des éléments clés de toute application Angular. Pour créer un nouveau service, utilisez la commande `ng generate service` + nom_de_votre_service (ou `ng g s`). Cette commande génère le fichier TypeScript pour votre service, ainsi que les fichiers de test associés.
 
 ---
 
@@ -101,7 +101,7 @@ Exécutez `ng build` pour construire le projet. Les artefacts de construction se
 
 ## :open_file_folder: Contenu du projet [![forthebadge](https://forthebadge.com/images/badges/check-it-out.svg)](https://forthebadge.com)
 
-Comme vous pouvez le constater, une architecture a déjà été définie pour le projet. Il s'agit simplement d'une suggestion, vous pouvez choisir d'utiliser la vôtre. L'architecture prédéfinie comprend (en plus de l'architecture angular par défaut) les éléments suivants :
+Ci-dessous l'architecture du projet:
 
 ### `components`
 
@@ -111,15 +111,28 @@ dossier : contient tous les composants réutilisables
 
 dossier : contient les composants utilisés pour le routage
 
-**accueil**
+---
+
+
+## **HomeComponent**
 
 La page d'accueil
 
-**détails**
+<img src="src\assets\homeComponent_(iPhone SE).png">
+
+
+---
+
+
+## **DetailComponent**
 
 Page spécifique au pays
 
-**erreur** [![forthebadge](https://forthebadge.com/images/badges/uh-oh-404-no-pages-or-badges.svg)](https://forthebadge.com)
+<img src="src\assets\detailComponent_(iPhone SE).png">
+
+---
+
+## **NotFoundComponent** [![forthebadge](https://forthebadge.com/images/badges/uh-oh-404-no-pages-or-badges.svg)](https://forthebadge.com)
 
 ### `core`
 
@@ -181,6 +194,8 @@ export interface Olympic {
   participations: Participation[];
 }
 ```
+*Contient un paya avec ses participations*
+
 
 **Participation**
 
@@ -193,6 +208,8 @@ export interface Participation {
   athleteCount: number;
 }
 ```
+*Contient les informations d'une participation d'un pays*
+
 
 **Point**
 
@@ -202,6 +219,7 @@ export interface Point {
   y: number;
 }
 ```
+*Contient les valeurs x et y d'une position*
 
 **Size(s)**
 
@@ -217,6 +235,34 @@ export interface Size {
   aspect_ratio: number;
 }
 ```
+*Contient la largeur et la hauteur ainsi que l'aspect ratio pour sa variante*
+
+
+**TextPosition**
+
+```typescript
+export interface TextPosition {
+  id: number;
+  name: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+```
+*Permet de garder les informations nécessaires à un texte cliquable*
+
+**RectBox**
+
+```typescript
+export interface RectBox {
+  left: number;
+  top: number;
+  right: number;
+  bottom: number;
+  }
+```
+*Garde les valeurs des 4 coins gauche /haut / droite / bas*
 
 #### Les routes
 

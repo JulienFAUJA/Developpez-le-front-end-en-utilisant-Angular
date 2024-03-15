@@ -13,34 +13,6 @@ $greenColor:green;
 // Point de rupture pour les écrans de petite taille (mobile)
 $smallScreen: 768px;
 
-// Mixin pour les styles communs
-@mixin commonStyles {
-  position: absolute;
-
-  margin: auto;
-  padding: 0;
-}
-
-// Mixin pour les styles en fonction de la densité de pixels et de l'orientation
-@mixin resolutionStyles($density, $height, $width, $backgroundColor: null) {
-  @media screen and (min-resolution: #{$density}dppx) {
-    @include commonStyles;
-
-    @if $backgroundColor {
-      background-color: $backgroundColor;
-    }
-
-    @media screen and (orientation: landscape) {
-      height: calc(80dvh*$density);
-      width:calc(100dvw*$density);
-    }
-    @media screen and (orientation: portrait) {
-      height:calc(80dvh*$density);
-      width: calc(100dvw*$density);
-    }
-  }
-}
-
 .chart-container {
   position: relative;
 aspect-ratio: 2.8;

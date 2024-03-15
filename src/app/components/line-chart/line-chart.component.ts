@@ -44,9 +44,9 @@ export class LineChartComponent implements OnInit {
           {
             label: 'Medals Count', // Ajoutez un label pour votre dataset
             data: this.participations.map((value) => value.medalsCount),
-            backgroundColor: 'rgba(255, 99, 132, 0.2)', // Couleur de fond
+            backgroundColor: 'rgba(255, 99, 132, 1.0)', // Couleur de fond
             borderColor: 'rgba(255, 99, 132, 1)', // Couleur de la bordure
-            borderWidth: 1, // Largeur de la bordure
+            borderWidth: 4, // Largeur de la bordure
             fill: false, // Ne pas remplir l'aire sous la ligne
           },
         ],
@@ -55,8 +55,21 @@ export class LineChartComponent implements OnInit {
         responsive: true,
         aspectRatio: 3.0,
         scales: {
+          x: {
+            ticks: {
+              color:"black",
+              font:{
+                size:18,
+              }
+            },
+          },
           y: {
-            ticks: {},
+            ticks: {
+              color:"black",
+              font:{
+                size:18,
+              }
+            },
           },
         },
         plugins: {
