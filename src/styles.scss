@@ -77,36 +77,7 @@ $responsive_device_h: $s1080;
 
 $laptop_device_w: $s1366;
 $laptop_device_h: $s768;
-// Mixin pour les média queries en fonction de la densité de pixels (dppx) et des tailles d'écran
-@mixin responsive(
-  $device-width,
-  $device-height,
-  $dppx: 1,
-  $orientation: null
-) {
-  // Convertir les tailles d'écran en valeurs en pixels
-  $width: if(unit($device-width) == px, $device-width, $device-width + px);
-  $height: if(unit($device-height) == px, $device-height, $device-height + px);
 
-  // Calculer les tailles en fonction de la densité de pixels
-  $width: $width / $dppx;
-  $height: $height / $dppx;
-
-  // Média query pour les écrans de densité de pixels spécifiée
-  @media screen and (min-resolution: #{$dppx}dppx) {
-    @if $orientation == null {
-      // Média query pour tous les appareils
-      @media screen and (min-width: #{$width}) and (min-height: #{$height}) {
-        @content;
-      }
-    } @else {
-      // Média query pour les appareils avec une orientation spécifique
-      @media screen and (min-width: #{$width}) and (min-height: #{$height}) and (orientation: #{$orientation}) {
-        @content;
-      }
-    }
-  }
-}
 
 
 // Définition du mixin
@@ -138,21 +109,21 @@ $laptop_device_h: $s768;
 
 $defaultHeight: 15dvh;
 $defaultWidth: 100dvw;
+// Point de rupture pour les écrans de petite taille (mobile)
+$smallScreen: 300px;
 #container {
   position: fixed;
   height: auto; // Ajustement de la hauteur en fonction du contenu
   width: 100dvw;
+  padding: 0;
+  margin: 0;
     // Media queries pour la gestion responsive
     @media screen and (max-width: 768px) {
       width: 100%; // Largeur pleine pour les écrans étroits (mobile)
     }
 
 
-  
 
-
-  padding: 0;
-  margin: 0;
 }
 
 .header_blocks {
@@ -160,11 +131,17 @@ $defaultWidth: 100dvw;
   margin: 0 auto;
   width: fit-content;
   margin-bottom: 1%;
+
 }
 .title {
   @include titleBlockStyle;
   width: fit-content;
-  margin: 25px auto;
+  margin: 15px auto;
+  @media screen and (max-height: $smallScreen) {
+    margin: 5px auto;
+    
+  }
+  
 }
 .header_block {
   display: inline-block;

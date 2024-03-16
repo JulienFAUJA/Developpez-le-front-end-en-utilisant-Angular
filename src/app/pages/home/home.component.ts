@@ -39,10 +39,7 @@ export class HomeComponent implements OnInit {
         country: country.country,
         medals: country.participations.reduce((sum, participation) => sum + participation.medalsCount, 0)
       }));
-      this.totalMedalsByCountry.sort((a, b) => {
-        // Compare les pays en les convertissant en minuscules pour ignorer la casse
-        return a.country.toLowerCase().localeCompare(b.country.toLowerCase());
-      });
+      
     
       console.log(`Nombre de pays: ${this.numberOfCountries}`);
       console.log(`Liste des pays: ${this.listOfCountries}`);

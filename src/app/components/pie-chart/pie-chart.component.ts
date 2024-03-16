@@ -44,12 +44,8 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
    * Fonction de création du Pie
    */
   createChart() {
- 
-    // Tri du tableau par ordre alphabétique du pays
-    this.countryData.sort((a, b) => {
-      // Compare les pays en les convertissant en minuscules pour ignorer la casse
-      return a.country.toLowerCase().localeCompare(b.country.toLowerCase());
-    });
+    
+   
 
 
     function set_text_position(text:string, index:number, tooltipPoint:Point, halfWidth:number, halfHeight:number, rectBox:RectBox): Point{
@@ -57,7 +53,7 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
       const upper_half = tooltipPoint.y<halfHeight ? true:false;
       let text_x:number; 
       let text_y:number; 
-      const offset_value:number = 10;
+      const offset_value:number = 15;
       let offset_x:number = index%2==0 ? -offset_value:offset_value;
       
       if(left_half===true){
@@ -76,28 +72,31 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
       if(upper_half===true){
 
         if (index===0 ){
-          text_y = rectBox.top+15;
+          text_y = rectBox.top+10;
+        }
+        else if(index===1){
+          text_y = tooltipPoint.y-10;
         }
         else{
-          text_y = tooltipPoint.y;
+          text_y = tooltipPoint.y-30;
         }
       }
       else{
         switch(index){
           case 0:
-            text_y =  tooltipPoint.y-5;
+            text_y =  tooltipPoint.y-15;
           break;
           case 1:
-            text_y = tooltipPoint.y;
+            text_y = tooltipPoint.y-10;
           break;
           case 2:
             text_y = rectBox.bottom-Math.abs(rectBox.bottom-tooltipPoint.y)/2+5;
           break;
           case 3:
-            text_y = rectBox.bottom+5;
+            text_y = tooltipPoint.y;
           break;
           default:
-            text_y = tooltipPoint.y;
+            text_y = tooltipPoint.y-15;
             break;
         };
       }
@@ -106,7 +105,7 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
         x:text_x,
         y:text_y
       };
-      console.log("textPos:", text, textPos);
+      //console.log("textPos:", text, textPos);
       return textPos;
     }
 
@@ -117,8 +116,8 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
     const orientation: ScreenOrientation = window.screen.orientation;
     // Ceci va permettre d'afficher les légendes ou pas, en fonction de l'orientation
     let label_enabled: boolean = false;
-
-    if (orientation.type === 'portrait-primary') {
+    const laptop:Size1 = {width:1366,height:768};
+    if (orientation.type === 'portrait-primary' && window.screen.availHeight !== laptop.height && window.screen.availWidth !== laptop.width) {
       canvas?.setAttribute('width', window.screen.availWidth.toString());
       canvas?.setAttribute('height',(window.screen.availHeight * 0.8).toString());
       label_enabled = true;
@@ -178,9 +177,11 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
               ctx.fillStyle = 'black';
               const line_offset_x:number = textPos.x>halfWidth ? 0 : textWidth.width;
               ctx.moveTo(textPos.x+line_offset_x, textPos.y-5);
+              const offset_val:number = 5;
+              const x_offset:number = index<3 ? offset_val : -offset_val;
               
 
-              ctx.lineTo(x, textPos.y-5)
+              ctx.lineTo(x+x_offset, textPos.y-5)
               ctx.strokeStyle = color[index];
               ctx.stroke();
               
