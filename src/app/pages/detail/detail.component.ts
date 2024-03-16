@@ -21,7 +21,7 @@ Chart.register(annotationPlugin);
   templateUrl: './detail.component.html',
   styleUrls: ['./detail.component.scss'],
 })
-export class DetailComponent implements OnInit {
+export class DetailComponent implements OnInit,OnDestroy {
   countryName!: string;
   country!: Olympic;
   totalNumberOfMedals!: number;
@@ -29,8 +29,8 @@ export class DetailComponent implements OnInit {
   totalNumberOfAthletes!: number;
   participations!: Participation[];
   public olympics$!: Observable<Olympic[]>;
-  private ngUnsubscribe = new Subject<boolean>();
-
+  private ngUnsubscribe$!:Subject<boolean>;
+  public len!:number;
 
 
   constructor(
@@ -39,20 +39,28 @@ export class DetailComponent implements OnInit {
     private route: ActivatedRoute
   ) {}
 
-  
-
   get_data() {
     this.olympicService
       .getOlympics()
-      .pipe(takeUntil(this.ngUnsubscribe))
+      .pipe(takeUntil(this.ngUnsubscribe$))
       .subscribe((data: Olympic[]) => {
         const countryId:number = +this.route.snapshot.params['id'];
-        if (typeof countryId !== 'number') {
-          this.router.navigateByUrl('/**/' + countryId);
-        }
-      
-        
+
+          
         this.country = data[countryId-1];
+        console.log("this:", this.country);
+        
+          
+        
+        /* this.olympicService.getNumberOfOlympicItems().subscribe(numItems => {
+          console.log("items:",numItems); // Cela devrait imprimer le nombre d'éléments dans les données olympiques
+          this.len=numItems;
+        });
+        
+        if(countryId===0 || countryId> this.len){
+          this.router.navigateByUrl('/not-found/' + countryId);
+        } */
+        
         console.log("currentCountry dans detailComponent:", countryId, this.country);
         this.countryName = this.country.country;
         this.participations = this.country.participations;
@@ -69,17 +77,28 @@ export class DetailComponent implements OnInit {
           (sum, participation) => sum + participation.athleteCount,
           0
         );
+     
+        console.log(countryId);
+        
+        
+      
       });
+     
+      
+        
+        
   }
-
+ngUpdateView(){
+  this.get_data();
+}
   ngOnInit() {
     
     //console.log("countryId:", countryId);
+    this.ngUnsubscribe$ = new Subject<boolean>();
     this.get_data();
   }
 
   ngOnDestroy() {
-    this.ngUnsubscribe.next(true);
-    this.ngUnsubscribe.complete();
+    this.ngUnsubscribe$.next(true);
   }
 }

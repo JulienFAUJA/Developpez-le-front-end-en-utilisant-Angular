@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { Olympic } from '../models/Olympic';
 
 @Injectable({
@@ -30,5 +30,11 @@ export class OlympicService {
     return this.olympics$.asObservable();
   }
 
+  // Méthode pour obtenir le nombre d'éléments de premier niveau dans les données olympiques
+  getNumberOfOlympicItems(): Observable<number> {
+    return this.olympics$.pipe(
+      map((olympics) => olympics.length)
+    );
+  }
 
 }
