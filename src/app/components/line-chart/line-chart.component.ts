@@ -1,8 +1,10 @@
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import Chart, { ChartType } from 'chart.js/auto';
 import { Olympic } from 'src/app/core/models/Olympic';
 import { Participation } from '../../core/models/Participation';
+import { Observable, Subject, takeUntil } from 'rxjs';
+import { OlympicService } from 'src/app/core/services/olympic.service';
 
 @Component({
   selector: 'app-line-chart',
@@ -13,7 +15,9 @@ export class LineChartComponent implements OnInit {
   public chart:any;
   public font_size: number = 18;
   participations!: Participation[];
+  public years:number[] = [];
   @Input() country!: Olympic;
+
 
   
   createChart() {
@@ -30,7 +34,7 @@ export class LineChartComponent implements OnInit {
       type: 'line',
 
       data: {
-        labels: this.participations.map((value) => value.year),
+        labels: this.participations.map((value) => value.year), 
 
         datasets: [
           {
@@ -81,12 +85,15 @@ export class LineChartComponent implements OnInit {
   ngOnInit() {
     this.createChart();
   }
+  
 
   forceDestroy() {
     // Détruit le graphique pour libérer le canvas lorsque le composant est détruit
     if (this.chart) {
       this.chart.destroy();
       this.chart = null;
+      const canvas: HTMLCanvasElement | null = document.querySelector('canvas');
+      canvas?.remove();
     }
   }
   ngOnDestroy(): void {

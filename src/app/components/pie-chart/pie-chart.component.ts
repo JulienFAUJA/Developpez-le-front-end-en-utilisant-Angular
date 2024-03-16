@@ -8,7 +8,6 @@ import {
 } from '@angular/core';
 
 import Chart from 'chart.js/auto';
-import annotationPlugin from 'chartjs-plugin-annotation';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Router } from '@angular/router';
 import { TextPosition } from 'src/app/core/models/TextPosition';
@@ -16,10 +15,7 @@ import { Point } from 'src/app/core/models/Point';
 import { Size, Size1 } from 'src/app/core/models/Size';
 import { RectBox } from 'src/app/core/models/RectBox';
 
-Chart.register(annotationPlugin);
 Chart.register(ChartDataLabels);
-
-//
 
 @Component({
   selector: 'app-pie-chart',
@@ -44,86 +40,101 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
    * Fonction de création du Pie
    */
   createChart() {
-    
-   
+    /**
+     * Positionne chaque texte à sa place par rapport à la position de son tooltip
+     * mais prend en compte les éléments suivants pour gérer le responsive:
+     * sa position (du tooltip) par rapport aux moitié width et height.
+     * @param index L'index de l'élément dans le dataset
+     * @param tooltipPoint Le tooltip de l'élément
+     * @param halfWidth La moitié de la largeur
+     * @param halfHeight La moitié de la hauteur
+     * @param rectBox La box du contenu
+     * @returns La position du texte actuel
+     */
+    function set_text_position(
+      index: number,
+      tooltipPoint: Point,
+      halfWidth: number,
+      halfHeight: number,
+      rectBox: RectBox
+    ): Point {
+      const left_half: boolean = tooltipPoint.x < halfWidth ? true : false;
+      const upper_half: boolean = tooltipPoint.y < halfHeight ? true : false;
+      let text_x: number;
+      let text_y: number;
+      const offset_value: number = 15;
+      let offset_x: number = index % 2 == 0 ? -offset_value : offset_value;
 
-
-    function set_text_position(text:string, index:number, tooltipPoint:Point, halfWidth:number, halfHeight:number, rectBox:RectBox): Point{
-      const left_half=tooltipPoint.x<halfWidth ? true:false; 
-      const upper_half = tooltipPoint.y<halfHeight ? true:false;
-      let text_x:number; 
-      let text_y:number; 
-      const offset_value:number = 15;
-      let offset_x:number = index%2==0 ? -offset_value:offset_value;
-      
-      if(left_half===true){
-        if (index===0 || index===1)  text_x = halfWidth+offset_x;
-        
-        else  text_x =(halfWidth/3)+offset_x;
-      }
-      else{
-        if (index<=2){
-          text_x = rectBox.right-Math.abs(rectBox.right-halfWidth)/3+offset_x;
-        }
-        else{
-          text_x = halfWidth/4+offset_x;
+      if (left_half === true) {
+        if (index === 0 || index === 1) text_x = halfWidth + offset_x;
+        else text_x = halfWidth / 3 + offset_x;
+      } else {
+        if (index <= 2) {
+          text_x =
+            rectBox.right - Math.abs(rectBox.right - halfWidth) / 3 + offset_x;
+        } else {
+          text_x = halfWidth / 4 + offset_x;
         }
       }
-      if(upper_half===true){
-
-        if (index===0 ){
-          text_y = rectBox.top+10;
+      if (upper_half === true) {
+        if (index === 0) {
+          text_y = rectBox.top + 10;
+        } else if (index === 1) {
+          text_y = tooltipPoint.y - 10;
+        } else {
+          text_y = tooltipPoint.y - 30;
         }
-        else if(index===1){
-          text_y = tooltipPoint.y-10;
-        }
-        else{
-          text_y = tooltipPoint.y-30;
-        }
-      }
-      else{
-        switch(index){
+      } else {
+        switch (index) {
           case 0:
-            text_y =  tooltipPoint.y-15;
-          break;
+            text_y = tooltipPoint.y - 15;
+            break;
           case 1:
-            text_y = tooltipPoint.y-10;
-          break;
+            text_y = tooltipPoint.y - 10;
+            break;
           case 2:
-            text_y = rectBox.bottom-Math.abs(rectBox.bottom-tooltipPoint.y)/2+5;
-          break;
+            text_y =
+              rectBox.bottom -
+              Math.abs(rectBox.bottom - tooltipPoint.y) / 2 +
+              5;
+            break;
           case 3:
             text_y = tooltipPoint.y;
-          break;
-          default:
-            text_y = tooltipPoint.y-15;
             break;
-        };
+          default:
+            text_y = tooltipPoint.y - 15;
+            break;
+        }
       }
-
-      const textPos:Point = {
-        x:text_x,
-        y:text_y
-      };
-      //console.log("textPos:", text, textPos);
-      return textPos;
+      return {
+        x: text_x,
+        y: text_y,
+      } as Point;
     }
 
     // Le this n'est plus pris dans le contexte donc le self me permet d'utiliser le routing depuis le pie
     const self = this;
-    const canvas = document.querySelector('canvas');
+    const canvas: HTMLCanvasElement | null = document.querySelector('canvas');
     // L'orientation de l'écran
     const orientation: ScreenOrientation = window.screen.orientation;
     // Ceci va permettre d'afficher les légendes ou pas, en fonction de l'orientation
     let label_enabled: boolean = false;
-    const laptop:Size1 = {width:1366,height:768};
-    if (orientation.type === 'portrait-primary' && window.screen.availHeight !== laptop.height && window.screen.availWidth !== laptop.width) {
+    // J'ai détecté un problème sur le device laptop dans l'inspecteur. Il me considère que portrait et landscape sont inversés
+    // J'y remédie alors dans le IF suivant
+    const height_ratio: number = 0.8;
+    const new_height: number = window.screen.availHeight * height_ratio;
+    const laptop: Size1 = { width: 1366, height: 768 };
+    if (
+      orientation.type === 'portrait-primary' &&
+      window.screen.availHeight !== laptop.height &&
+      window.screen.availWidth !== laptop.width
+    ) {
       canvas?.setAttribute('width', window.screen.availWidth.toString());
-      canvas?.setAttribute('height',(window.screen.availHeight * 0.8).toString());
+      canvas?.setAttribute('height', new_height.toString());
       label_enabled = true;
     } else if (orientation.type === 'landscape-primary') {
       canvas?.setAttribute('width', (window.screen.availWidth / 2).toString());
-      canvas?.setAttribute('height', (window.screen.availHeight * 0.8).toString());
+      canvas?.setAttribute('height', new_height.toString());
       label_enabled = false;
     }
     canvas?.setAttribute('padding', '0');
@@ -145,7 +156,6 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
           chartArea: { top, bottom, left, right, width, height },
         } = chart;
 
-
         // Ensemble pour stocker les positions des textes
         const textPositions = new Set<TextPosition>();
 
@@ -153,71 +163,84 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
           chart.data.datasets.forEach((dataset, i) => {
             chart.getDatasetMeta(i).data.forEach((datapoint, index) => {
               const { x, y } = datapoint.tooltipPosition(true);
-              const tooltipPoint:Point = {
-                x:x,
-                y:y
+              const tooltipPoint: Point = {
+                x: x,
+                y: y,
               };
-              const rectBox = {
+              const rectBox: RectBox = {
                 left: left,
                 top: top,
                 right: right,
                 bottom: bottom,
               };
-              const halfWidth = width / 2;
-              const halfHeight = height / 2;
+              const halfWidth: number = width / 2;
+              const halfHeight: number = height / 2;
               const texte = chart.data.labels?.at(index) as string;
-              const textPos = set_text_position(texte, index, tooltipPoint, halfWidth, halfHeight,rectBox)
+              const textPos: Point = set_text_position(
+                index,
+                tooltipPoint,
+                halfWidth,
+                halfHeight,
+                rectBox
+              );
 
               const color = dataset.backgroundColor as string[];
               ctx.fillStyle = color[index];
-             
+
               ctx.beginPath();
-              const textWidth = ctx.measureText(texte);
+              const textWidth: TextMetrics = ctx.measureText(texte);
+
               ctx.font = '18px Arial';
               ctx.fillStyle = 'black';
-              const line_offset_x:number = textPos.x>halfWidth ? 0 : textWidth.width;
-              ctx.moveTo(textPos.x+line_offset_x, textPos.y-5);
-              const offset_val:number = 5;
-              const x_offset:number = index<3 ? offset_val : -offset_val;
-              
+              const line_offset_x: number =
+                textPos.x > halfWidth ? 0 : textWidth.width;
+              const y_offset: number = 5;
+              ctx.moveTo(textPos.x + line_offset_x, textPos.y - y_offset);
+              const offset_val: number = 5;
+              const x_offset: number = index < 3 ? offset_val : -offset_val;
 
-              ctx.lineTo(x+x_offset, textPos.y-5)
+              ctx.lineTo(x + x_offset, textPos.y - y_offset);
               ctx.strokeStyle = color[index];
               ctx.stroke();
-              
+
               ctx.fillText(texte, textPos.x, textPos.y);
 
               // Ajouter la position du texte à l'ensemble
-          const position: TextPosition = {
-            x: textPos.x,
-            y: textPos.y,
-            width: textWidth.width,
-            height: 18, 
-            name: texte,
-            id: index 
-          };
-          textPositions.add(position);
+              const position: TextPosition = {
+                x: textPos.x,
+                y: textPos.y - 25,
+                width: textWidth.width,
+                height: 50,
+                name: texte,
+                id: index,
+              };
 
-          // Gestion de l'événement onclick
-    ctx.canvas.addEventListener('click', (event) => {
-      const rect = ctx.canvas.getBoundingClientRect();
-      const clickX = event.clientX - rect.left;
-      const clickY = event.clientY - rect.top;
+              textPositions.add(position);
 
-      // Vérifier si le clic est dans l'un des textes
-      for (const position of textPositions) {
-        if (clickX > position.x && clickX < (position.x + position.width) && clickY > (position.y-position.height) && clickY < (position.y + position.height)) {
-          const page_id: number = self.countryData[position.id].id - 1;
-          console.log('country:',self.countryData[position.id].country, 'id:', page_id,'index:', position.id);
-          self.router.navigateByUrl('/detail/' + page_id);
-         event.stopPropagation();
-         chart.clear();
-        
-          return;
-        }
-        
-      }        
-    });
+              // Gestion de l'événement onclick
+              ctx.canvas.addEventListener('click', (event) => {
+                const rect: DOMRect = ctx.canvas.getBoundingClientRect();
+                const clickX: number = event.clientX - rect.left;
+                const clickY: number = event.clientY - rect.top;
+
+                // Vérifier si le clic est dans l'un des textes
+                for (const position of textPositions) {
+                  if (
+                    clickX > position.x &&
+                    clickX < position.x + position.width &&
+                    clickY >= position.y - position.height &&
+                    clickY <= position.y + position.height
+                  ) {
+                    const page_id: number = self.countryData[position.id].id;
+                    self.router.navigateByUrl('/detail/' + page_id);
+                    break;
+                    
+                  }
+                }                    
+                    event.stopImmediatePropagation();
+                    chart.clear();
+                return;
+              });
             });
           });
         }
@@ -279,37 +302,26 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
             yAlign: 'top',
             caretSize: 15, // Taille du triangle sous le tooltip
           },
-          annotation: {
-            annotations: {},
-          },
         },
       },
     });
   }
 
   ngOnInit(): void {
-    console.log(
-      'mes data parsées:',
-      this.countryData.map((data) => data.country),
-      this.countryData.map((data) => data.medals)
-    );
     this.createChart();
   }
-
-  ngOnDestroy(): void {
-    // Détruit le graphique pour libérer le canvas lorsque le composant est détruit
+  forceDestroy(){
     if (this.chart) {
       this.chart.destroy();
       this.chart = null;
     }
   }
+  ngOnDestroy(): void {
+    // Détruit le graphique pour libérer le canvas lorsque le composant est détruit
+    this.forceDestroy();
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(
-      'mes data parsées:',
-      this.countryData.map((data) => data.country),
-      this.countryData.map((data) => data.medals)
-    );
     if (changes['countryData']) {
       if (this.chart) {
         this.chart.destroy();
