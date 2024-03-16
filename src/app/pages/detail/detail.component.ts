@@ -39,11 +39,14 @@ export class DetailComponent implements OnInit {
     private route: ActivatedRoute
   ) {}
 
-  get_data(countryId: number) {
+  
+
+  get_data() {
     this.olympicService
       .getOlympics()
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((data: Olympic[]) => {
+        const countryId:number = +this.route.snapshot.params['id'];
         if (typeof countryId !== 'number') {
           this.router.navigateByUrl('/**/' + countryId);
         }
@@ -70,9 +73,9 @@ export class DetailComponent implements OnInit {
   }
 
   ngOnInit() {
-    const countryId = +this.route.snapshot.params['id'];
-    console.log("countryId:", countryId);
-    this.get_data(countryId);
+    
+    //console.log("countryId:", countryId);
+    this.get_data();
   }
 
   ngOnDestroy() {

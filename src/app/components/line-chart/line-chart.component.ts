@@ -23,6 +23,7 @@ export class LineChartComponent implements OnInit {
   createChart() {
     try {
       this.participations = this.country.participations;
+      this.chart.destroy();
     } catch (error) {
     }
 

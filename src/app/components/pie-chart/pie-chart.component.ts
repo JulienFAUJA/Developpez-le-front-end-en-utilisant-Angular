@@ -246,7 +246,7 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
         }
       },
     };
-
+    
     this.chart = new Chart('MyChart', {
       type: 'pie',
       data: {
@@ -308,6 +308,7 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.forceDestroy();
     this.createChart();
   }
   forceDestroy(){
