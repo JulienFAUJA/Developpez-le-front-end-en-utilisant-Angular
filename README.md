@@ -145,6 +145,11 @@ Page spécifique au pays
 ---
 
 ## **NotFoundComponent** [![forthebadge](https://forthebadge.com/images/badges/uh-oh-404-no-pages-or-badges.svg)](https://forthebadge.com)
+Page d'erreur qui génère une phrase humoristique impliquant un royaume de science fiction à leur éventuelle participation (ou non-participation aux jeux olympiques).
+
+<img src="src\assets\notFoundComponent_(iPhone SE).png">
+
+---
 
 ### `core`
 

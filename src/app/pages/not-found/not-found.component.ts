@@ -17,7 +17,7 @@ export class NotFoundComponent implements OnInit {
     "Tatooine avait cet id, mais ils ont perdu en essayant de se qualifier par la FORCE.",
     "Cet id appartenait à Narnia, mais ils se sont perdus dans le placard.",
     "Gallifrey a réclamé cet id, mais ils ont été retardés par une anomalie temporelle.",
-    "Westeros ne sont pas venus, ils ne voulaient pas monter sur le podium, seulement sur le trône.",
+    "Westeros n'est pas venu, ils ne voulaient pas monter sur le podium, seulement sur le trône.",
     "Asgard a revendiqué cet id, mais ils ont été distraits par une querelle de famille entre les dieux.",
     "cet id était pour Atlantis, mais ils sont restés 'vagues' sur leur participation."
     ];

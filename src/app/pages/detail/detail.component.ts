@@ -30,7 +30,7 @@ export class DetailComponent implements OnInit,OnDestroy {
   participations!: Participation[];
   public olympics$!: Observable<Olympic[]>;
   private ngUnsubscribe$!:Subject<boolean>;
-  public len!:number;
+  public len:number=0;
 
 
   constructor(
@@ -54,7 +54,7 @@ export class DetailComponent implements OnInit,OnDestroy {
           console.log("items:",numItems); // Cela devrait imprimer le nombre d'éléments dans les données olympiques
           this.len=numItems;
         });
-        if(countryId===0 || countryId> this.len){
+        if(this.len && this.len>0 && (countryId> this.len || countryId===0)){
           this.router.navigateByUrl('/not-found/' + countryId);
         }
 
