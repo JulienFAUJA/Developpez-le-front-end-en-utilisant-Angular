@@ -46,7 +46,7 @@ export class DetailComponent implements OnInit,OnDestroy {
         this.olympicService.getNumberOfOlympicItems().subscribe(numItems => {
           this.len=numItems;
         });
-        if(this.len && this.len>0 && (countryId> this.len || countryId===0)){
+        if(this.len && this.len>0 && (countryId> this.len || countryId===0) ||isNaN(countryId)){
           this.goTo(countryId);
         }
 

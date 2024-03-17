@@ -25,11 +25,18 @@ export class NotFoundComponent implements OnInit {
 
 
   constructor(private route: ActivatedRoute) { }
-  
+
   onRefresh(){
     const countryId:number= +this.route.snapshot.params['id'];
-    const phrase_id:number = countryId%this.not_found_phrases.length;
-    this.current_phrase= this.not_found_phrases[phrase_id];
+    if (isNaN(countryId)) {
+      this.current_phrase="Tu cherches quoi là ? On ne rentre pas les paramètres à la main";
+    }
+    else{
+      const phrase_id:number = countryId%this.not_found_phrases.length;
+      this.current_phrase= this.not_found_phrases[phrase_id];
+    }
+    
+    
     
   }
   ngOnInit(): void {
