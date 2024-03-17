@@ -25,6 +25,7 @@ Chart.register(ChartDataLabels);
 export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
   public chart: any;
   public font_size: number = 22;
+  public max_id:number=0;
   public colors: string[] = [
     'rgb(151, 128, 161)',
     'rgb(121, 61, 82)',
@@ -33,6 +34,7 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
     'rgb(137, 161, 219)',
   ];
   @Input() countryData: { id: number; country: string; medals: number }[] = [];
+  
 
   constructor(private router: Router) {}
 
@@ -147,7 +149,7 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
     };
 
     const padding_offset: number = 49.51194184839045 * screen_size.aspect_ratio;
-
+    self.max_id=self.countryData.length;
     const pie_labels_plugin = {
       id: 'pieLabelsLinePlugin',
       afterDraw(chart: Chart, args: {}, options: {}) {
@@ -232,7 +234,15 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
                     clickY <= position.y + position.height
                   ) {
                     const page_id: number = self.countryData[position.id].id;
-                    self.router.navigateByUrl('/detail/' + page_id);
+                    console.log('pageId:', page_id);
+                    if (page_id>self.max_id){
+                      console.log('max_id:', self.max_id);
+                      self.router.navigateByUrl('not-found/');
+                    }
+                    else{
+                      self.router.navigateByUrl('/detail/' + page_id);
+                    }
+                    
                     break;
                     
                   }

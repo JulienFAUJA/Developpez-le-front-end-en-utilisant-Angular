@@ -21,8 +21,10 @@ export class HomeComponent implements OnInit {
   constructor(private olympicService: OlympicService) {}
 
   get_data(){
-    this.olympicService
-      .getOlympics()
+    
+    this.olympics$=this.olympicService.getOlympics();
+    console.log("olympics:",this.olympics$);
+    this.olympics$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((data: Olympic[]) => {
         this.numberOfCountries = data.length; // Nombre de pays

@@ -38,28 +38,28 @@ export class DetailComponent implements OnInit,OnDestroy {
     private router: Router,
     private route: ActivatedRoute
   ) {}
+  
 
   get_data() {
-    this.olympicService
-      .getOlympics()
+    this.olympics$=this.olympicService.getOlympics();
+    this.olympics$
       .pipe(takeUntil(this.ngUnsubscribe$))
       .subscribe((data: Olympic[]) => {
         const countryId:number = +this.route.snapshot.params['id'];
-
-          
+        
         this.country = data[countryId-1];
         console.log("this:", this.country);
-        
-          
-        
-        /* this.olympicService.getNumberOfOlympicItems().subscribe(numItems => {
+
+        this.olympicService.getNumberOfOlympicItems().subscribe(numItems => {
           console.log("items:",numItems); // Cela devrait imprimer le nombre d'éléments dans les données olympiques
           this.len=numItems;
         });
-        
         if(countryId===0 || countryId> this.len){
           this.router.navigateByUrl('/not-found/' + countryId);
-        } */
+        }
+
+       
+      
         
         console.log("currentCountry dans detailComponent:", countryId, this.country);
         this.countryName = this.country.country;

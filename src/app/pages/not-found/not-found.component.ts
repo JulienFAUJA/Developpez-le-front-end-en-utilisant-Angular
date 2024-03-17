@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
-import { Observable } from 'rxjs/internal/Observable';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-not-found',
@@ -9,18 +9,37 @@ import { Observable } from 'rxjs/internal/Observable';
 export class NotFoundComponent implements OnInit {
   phrase!: string;
   @Input() elem_id!:number;
-  public not_found_phrase$!: Observable<string>;
+  public not_found_phrases:string[] = [
+    "Tu croyais que cet id était réservé pour la Terre du Milieu ? Ils ne se sont pas qualifiés, ils se sont fait Saquet.",
+    "Cet id était pour Pandora, mais ils sont restés dans l'équipe bleue.",
+    "Cet id était pour Poudlard, mais ils ont triché au tirage au 'sort'.",
+    "Wakanda a réclamé cet id, mais ils se sont retirés pour protéger leur technologie.",
+    "Tatooine avait cet id, mais ils ont perdu en essayant de se qualifier par la FORCE.",
+    "Cet id appartenait à Narnia, mais ils se sont perdus dans le placard.",
+    "Gallifrey a réclamé cet id, mais ils ont été retardés par une anomalie temporelle.",
+    "Westeros ne sont pas venus, ils ne voulaient pas monter sur le podium, seulement sur le trône.",
+    "Asgard a revendiqué cet id, mais ils ont été distraits par une querelle de famille entre les dieux.",
+    "cet id était pour Atlantis, mais ils sont restés 'vagues' sur leur participation."
+    ];
+    public current_phrase!:string; 
 
 
-  constructor() { }
-
+  constructor(private route: ActivatedRoute) { }
+  onRefresh(){
+    const countryId:number= +this.route.snapshot.params['id'];
+    const phrase_id:number = countryId%this.not_found_phrases.length;
+    console.log("phrase_id:", phrase_id, "countryId:",countryId);
+    this.current_phrase= this.not_found_phrases[phrase_id];
+    
+  }
   ngOnInit(): void {
-    this.phrase= "erreur avec l'id: "+this.elem_id;
+   this.onRefresh();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['elem_id']) {
-      this.phrase= "erreur avec l'id: "+this.elem_id;
+    const countryId:number= +this.route.snapshot.params['id'];
+    if (changes['countryId']) {
+      this.onRefresh();
     }
   }
 

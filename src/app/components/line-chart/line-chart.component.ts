@@ -16,11 +16,13 @@ export class LineChartComponent implements OnInit {
   public font_size: number = 18;
   participations!: Participation[];
   public years:number[] = [];
+  @Input() len!:number | undefined;
   @Input() country!: Olympic;
 
 
   
   createChart() {
+    
     try {
       this.participations = this.country.participations;
       this.chart.destroy();
@@ -81,7 +83,7 @@ export class LineChartComponent implements OnInit {
     });
   }
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private router: Router,private route: ActivatedRoute) {}
 
   ngOnInit() {
     this.createChart();
@@ -102,7 +104,9 @@ export class LineChartComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['country'] || changes['participations']) {
+    const countryId:number = +this.route.snapshot.params['id'];
+    
+    if ((changes['country'] || changes['participations'])) {
       this.forceDestroy();
       this.createChart(); // Recréez le graphique avec les nouvelles données
     }
