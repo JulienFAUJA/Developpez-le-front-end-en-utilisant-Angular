@@ -47,7 +47,7 @@ export class DetailComponent implements OnInit,OnDestroy {
           this.len=numItems;
         });
         if(this.len && this.len>0 && (countryId> this.len || countryId===0)){
-          this.router.navigateByUrl('/not-found/' + countryId);
+          this.goTo(countryId);
         }
 
         this.countryName = this.country.country;
@@ -67,8 +67,12 @@ export class DetailComponent implements OnInit,OnDestroy {
         );
     
       });
+     
   }
-
+goTo(countryId:number){
+  this.forceDestroy();
+  this.router.navigateByUrl('/not-found/' + countryId);
+}
 ngUpdateView(){
   this.get_data();
 }
@@ -76,9 +80,12 @@ ngUpdateView(){
     this.ngUnsubscribe$ = new Subject<boolean>();
     this.get_data();
   }
-
-  ngOnDestroy() {
+  forceDestroy(){
     this.ngUnsubscribe$.next(true);
     this.ngUnsubscribe$.complete();
+  }
+
+  ngOnDestroy() {
+    this.forceDestroy();
   }
 }
