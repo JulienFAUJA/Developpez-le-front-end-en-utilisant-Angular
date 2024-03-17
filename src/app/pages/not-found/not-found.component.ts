@@ -25,10 +25,10 @@ export class NotFoundComponent implements OnInit {
 
 
   constructor(private route: ActivatedRoute) { }
+  
   onRefresh(){
     const countryId:number= +this.route.snapshot.params['id'];
     const phrase_id:number = countryId%this.not_found_phrases.length;
-    console.log("phrase_id:", phrase_id, "countryId:",countryId);
     this.current_phrase= this.not_found_phrases[phrase_id];
     
   }

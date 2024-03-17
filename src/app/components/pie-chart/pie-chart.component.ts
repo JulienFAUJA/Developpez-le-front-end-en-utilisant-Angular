@@ -125,18 +125,20 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
     // J'y remédie alors dans le IF suivant
     const height_ratio: number = 0.8;
     const new_height: number = window.screen.availHeight * height_ratio;
+    const width_label:string = "width";
+    const height_label:string = "height";
     const laptop: Size1 = { width: 1366, height: 768 };
     if (
       orientation.type === 'portrait-primary' &&
       window.screen.availHeight !== laptop.height &&
       window.screen.availWidth !== laptop.width
     ) {
-      canvas?.setAttribute('width', window.screen.availWidth.toString());
-      canvas?.setAttribute('height', new_height.toString());
+      canvas?.setAttribute(width_label, window.screen.availWidth.toString());
+      canvas?.setAttribute(height_label, new_height.toString());
       label_enabled = true;
     } else if (orientation.type === 'landscape-primary') {
-      canvas?.setAttribute('width', (window.screen.availWidth / 2).toString());
-      canvas?.setAttribute('height', new_height.toString());
+      canvas?.setAttribute(width_label, (window.screen.availWidth / 2).toString());
+      canvas?.setAttribute(height_label, new_height.toString());
       label_enabled = false;
     }
     canvas?.setAttribute('padding', '0');
@@ -150,6 +152,9 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
 
     const padding_offset: number = 49.51194184839045 * screen_size.aspect_ratio;
     self.max_id=self.countryData.length;
+
+    /* Mon propre plugin pour ChartJS, dans le but de positionner le texte et
+     gérer le clic */
     const pie_labels_plugin = {
       id: 'pieLabelsLinePlugin',
       afterDraw(chart: Chart, args: {}, options: {}) {
@@ -234,17 +239,13 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
                     clickY <= position.y + position.height
                   ) {
                     const page_id: number = self.countryData[position.id].id;
-                    console.log('pageId:', page_id);
                     if (page_id>self.max_id){
-                      console.log('max_id:', self.max_id);
                       self.router.navigateByUrl('not-found/');
                     }
                     else{
                       self.router.navigateByUrl('/detail/' + page_id);
                     }
-                    
                     break;
-                    
                   }
                 }                    
                     event.stopImmediatePropagation();

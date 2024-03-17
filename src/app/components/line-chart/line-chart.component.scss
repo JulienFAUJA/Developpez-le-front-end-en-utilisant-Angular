@@ -1,17 +1,19 @@
+@mixin commonStyle {
+  margin: 0;
+  padding: 10px;
+  height: auto;
+  width: 100%;
+}
 .chart-container {
     position: relative;
-    margin: 0;
-    padding: 10px;
-    height: auto;
-    width: 100%;
+    @include commonStyle();
+   
   }
 
   #MyChartLine {
     position: absolute;
-    margin: 0;
-    padding: 10px;
+    @include commonStyle();
     padding-bottom: 10%;
-    height: auto;
-    width: 100%;
+
   
   }

@@ -3,8 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import Chart, { ChartType } from 'chart.js/auto';
 import { Olympic } from 'src/app/core/models/Olympic';
 import { Participation } from '../../core/models/Participation';
-import { Observable, Subject, takeUntil } from 'rxjs';
-import { OlympicService } from 'src/app/core/services/olympic.service';
+
 
 @Component({
   selector: 'app-line-chart',
@@ -15,12 +14,13 @@ export class LineChartComponent implements OnInit {
   public chart:any;
   public font_size: number = 18;
   participations!: Participation[];
-  public years:number[] = [];
-  @Input() len!:number | undefined;
+  len!:number | undefined;
   @Input() country!: Olympic;
 
 
-  
+  /**
+   * Fonction qui crée et gère le graphique
+   */
   createChart() {
     
     try {
@@ -43,10 +43,14 @@ export class LineChartComponent implements OnInit {
           {
             label: 'Medals Count', // Ajoutez un label pour votre dataset
             data: this.participations.map((value) => value.medalsCount),
-            backgroundColor: 'rgba(255, 99, 132, 1.0)', // Couleur de fond
-            borderColor: 'rgba(255, 99, 132, 1)', // Couleur de la bordure
+            backgroundColor: 'rgb(25,28,58)', // Couleur de fond
+            borderColor: 'blue', // Couleur de la bordure
             borderWidth: 4, // Largeur de la bordure
             fill: false, // Ne pas remplir l'aire sous la ligne
+            pointBorderWidth:4,
+            pointRadius:10,
+            pointBorderColor:'rgb(25,28,58)',
+            
           },
         ],
       },
@@ -105,7 +109,6 @@ export class LineChartComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges): void {
     const countryId:number = +this.route.snapshot.params['id'];
-    
     if ((changes['country'] || changes['participations'])) {
       this.forceDestroy();
       this.createChart(); // Recréez le graphique avec les nouvelles données
