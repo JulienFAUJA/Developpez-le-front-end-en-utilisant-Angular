@@ -50,9 +50,9 @@ Il y en a d'autres mais ce sont les plus courants et les plus simples à apprend
 
 ---
 
-## :warning: Installation ![Angular](https://img.shields.io/badge/angular_CLI-v14.1.3-blue)
+## :warning: Installation ![Angular](https://img.shields.io/badge/angular_CLI-v14.2.13-blue)
 
-Ce projet a été généré avec [Angular CLI](https://github.com/angular/angular-cli) version 14.1.3.
+Ce projet a été généré avec [Angular CLI](https://github.com/angular/angular-cli) version 14.2.13.
 
 N'oubliez pas d'installer vos `node_modules` avant de commencer (`npm install`).
 
