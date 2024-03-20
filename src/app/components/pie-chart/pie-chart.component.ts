@@ -23,7 +23,7 @@ Chart.register(ChartDataLabels);
   styleUrls: ['./pie-chart.component.scss'],
 })
 export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
-  public chart: any;
+  public chart!:Chart;
   public font_size: number = 22;
   public max_id:number=0;
   public colors: string[] = [
@@ -325,7 +325,6 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
   forceDestroy(){
     if (this.chart) {
       this.chart.destroy();
-      this.chart = null;
     }
   }
   ngOnDestroy(): void {
@@ -337,7 +336,6 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
     if (changes['countryData']) {
       if (this.chart) {
         this.chart.destroy();
-        this.chart = null;
       }
       this.createChart(); // Recréez le graphique avec les nouvelles données
     }

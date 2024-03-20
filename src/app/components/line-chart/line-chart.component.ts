@@ -11,7 +11,7 @@ import { Participation } from '../../core/models/Participation';
   styleUrls: ['./line-chart.component.scss'],
 })
 export class LineChartComponent implements OnInit {
-  public chart:any;
+  public chart!:Chart;
   public font_size: number = 18;
   participations!: Participation[];
   len!:number | undefined;
@@ -98,7 +98,6 @@ export class LineChartComponent implements OnInit {
     // Détruit le graphique pour libérer le canvas lorsque le composant est détruit
     if (this.chart) {
       this.chart.destroy();
-      this.chart = null;
       const canvas: HTMLCanvasElement | null = document.querySelector('canvas');
       canvas?.remove();
     }
