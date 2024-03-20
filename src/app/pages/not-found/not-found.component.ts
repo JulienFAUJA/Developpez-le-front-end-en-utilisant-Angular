@@ -26,7 +26,7 @@ export class NotFoundComponent implements OnInit {
 
   constructor(private route: ActivatedRoute) { }
 
-  onRefresh(){
+  onRefresh():void{
     const countryId:number= +this.route.snapshot.params['id'];
     if (isNaN(countryId)) {
       this.current_phrase="Tu cherches quoi là ? On ne rentre pas les paramètres à la main";

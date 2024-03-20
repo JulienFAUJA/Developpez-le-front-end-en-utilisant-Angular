@@ -3,7 +3,6 @@ import { Observable, Subject, of, takeUntil } from 'rxjs';
 import { Olympic } from 'src/app/core/models/Olympic';
 import { OlympicService } from 'src/app/core/services/olympic.service';
 
-
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -14,16 +13,14 @@ export class HomeComponent implements OnInit {
   numberOfCountries!: number;
   listOfCountries!: string[];
   totalJO!: number;
-  totalMedalsByCountry: {id:number,  country: string; medals: number }[] = [];
+  totalMedalsByCountry: { id: number; country: string; medals: number }[] = [];
   private ngUnsubscribe = new Subject<boolean>();
-
 
   constructor(private olympicService: OlympicService) {}
 
-  get_data(){
-    
-    this.olympics$=this.olympicService.getOlympics();
-    console.log("olympics:",this.olympics$);
+  get_data(): void {
+    this.olympics$ = this.olympicService.getOlympics();
+    console.log('olympics:', this.olympics$);
     this.olympics$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((data: Olympic[]) => {
@@ -33,23 +30,28 @@ export class HomeComponent implements OnInit {
 
         // Pour le nombre total de JO, on doit compter toutes les participations uniques
         this.totalJO = new Set(
-          data.flatMap((country) => country.participations.map((participation) => participation.year))
+          data.flatMap((country) =>
+            country.participations.map((participation) => participation.year)
+          )
         ).size;
 
         // Création d'un attribut pour chaque pays avec la somme totale de ses médailles
         this.totalMedalsByCountry = data.map((country) => ({
           id: country.id,
           country: country.country,
-          medals: country.participations.reduce((sum, participation) => sum + participation.medalsCount, 0),
+          medals: country.participations.reduce(
+            (sum, participation) => sum + participation.medalsCount,
+            0
+          ),
         }));
       });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.get_data();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.ngUnsubscribe.next(true);
     this.ngUnsubscribe.complete();
   }

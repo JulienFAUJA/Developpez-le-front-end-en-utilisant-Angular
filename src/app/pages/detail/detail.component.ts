@@ -1,21 +1,16 @@
-import {
-  Component,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject, of, takeUntil } from 'rxjs';
 import { Olympic } from 'src/app/core/models/Olympic';
 import { OlympicService } from 'src/app/core/services/olympic.service';
 import { Participation } from '../../core/models/Participation';
 
-
 @Component({
   selector: 'app-detail',
   templateUrl: './detail.component.html',
   styleUrls: ['./detail.component.scss'],
 })
-export class DetailComponent implements OnInit,OnDestroy {
+export class DetailComponent implements OnInit, OnDestroy {
   countryName!: string;
   country!: Olympic;
   totalNumberOfMedals!: number;
@@ -23,30 +18,33 @@ export class DetailComponent implements OnInit,OnDestroy {
   totalNumberOfAthletes!: number;
   participations!: Participation[];
   public olympics$!: Observable<Olympic[]>;
-  private ngUnsubscribe$!:Subject<boolean>;
-  public len:number=0;
-
+  private ngUnsubscribe$!: Subject<boolean>;
+  public len: number = 0;
 
   constructor(
     private olympicService: OlympicService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
-  
-   
-  get_data() {
-    this.olympics$=this.olympicService.getOlympics();
+
+  get_data(): void {
+    this.olympics$ = this.olympicService.getOlympics();
     this.olympics$
       .pipe(takeUntil(this.ngUnsubscribe$))
       .subscribe((data: Olympic[]) => {
-        const countryId:number = +this.route.snapshot.params['id'];
-        
-        this.country = data[countryId-1];
+        const countryId: number = +this.route.snapshot.params['id'];
 
-        this.olympicService.getNumberOfOlympicItems().subscribe(numItems => {
-          this.len=numItems;
+        this.country = data[countryId - 1];
+
+        this.olympicService.getNumberOfOlympicItems().subscribe((numItems) => {
+          this.len = numItems;
         });
-        if(this.len && this.len>0 && (countryId> this.len || countryId===0) ||isNaN(countryId)){
+        if (
+          (this.len &&
+            this.len > 0 &&
+            (countryId > this.len || countryId === 0)) ||
+          isNaN(countryId)
+        ) {
           this.goTo(countryId);
         }
 
@@ -65,27 +63,25 @@ export class DetailComponent implements OnInit,OnDestroy {
           (sum, participation) => sum + participation.athleteCount,
           0
         );
-    
       });
-     
   }
-goTo(countryId:number){
-  this.forceDestroy();
-  this.router.navigateByUrl('/not-found/' + countryId);
-}
-ngUpdateView(){
-  this.get_data();
-}
-  ngOnInit() {
+  goTo(countryId: number): void {
+    this.forceDestroy();
+    this.router.navigateByUrl('/not-found/' + countryId);
+  }
+  ngUpdateView(): void {
+    this.get_data();
+  }
+  ngOnInit(): void {
     this.ngUnsubscribe$ = new Subject<boolean>();
     this.get_data();
   }
-  forceDestroy(){
+  forceDestroy(): void {
     this.ngUnsubscribe$.next(true);
     this.ngUnsubscribe$.complete();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.forceDestroy();
   }
 }

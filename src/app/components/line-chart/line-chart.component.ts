@@ -4,30 +4,26 @@ import Chart, { ChartType } from 'chart.js/auto';
 import { Olympic } from 'src/app/core/models/Olympic';
 import { Participation } from '../../core/models/Participation';
 
-
 @Component({
   selector: 'app-line-chart',
   templateUrl: './line-chart.component.html',
   styleUrls: ['./line-chart.component.scss'],
 })
 export class LineChartComponent implements OnInit {
-  public chart!:Chart;
+  public chart!: Chart;
   public font_size: number = 18;
   participations!: Participation[];
-  len!:number | undefined;
+  len!: number | undefined;
   @Input() country!: Olympic;
-
 
   /**
    * Fonction qui crée et gère le graphique
    */
-  createChart() {
-    
+  createChart(): void {
     try {
       this.participations = this.country.participations;
       this.chart.destroy();
-    } catch (error) {
-    }
+    } catch (error) {}
 
     if (this.chart) {
       this.chart.destroy(); // Détruit le graphique existant s'il y en a un
@@ -37,7 +33,7 @@ export class LineChartComponent implements OnInit {
       type: 'line',
 
       data: {
-        labels: this.participations.map((value) => value.year), 
+        labels: this.participations.map((value) => value.year),
 
         datasets: [
           {
@@ -47,10 +43,9 @@ export class LineChartComponent implements OnInit {
             borderColor: 'blue', // Couleur de la bordure
             borderWidth: 4, // Largeur de la bordure
             fill: false, // Ne pas remplir l'aire sous la ligne
-            pointBorderWidth:4,
-            pointRadius:10,
-            pointBorderColor:'rgb(25,28,58)',
-            
+            pointBorderWidth: 4,
+            pointRadius: 10,
+            pointBorderColor: 'rgb(25,28,58)',
           },
         ],
       },
@@ -87,14 +82,13 @@ export class LineChartComponent implements OnInit {
     });
   }
 
-  constructor(private router: Router,private route: ActivatedRoute) {}
+  constructor(private router: Router, private route: ActivatedRoute) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.createChart();
   }
-  
 
-  forceDestroy() {
+  forceDestroy(): void {
     // Détruit le graphique pour libérer le canvas lorsque le composant est détruit
     if (this.chart) {
       this.chart.destroy();
@@ -107,8 +101,8 @@ export class LineChartComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    const countryId:number = +this.route.snapshot.params['id'];
-    if ((changes['country'] || changes['participations'])) {
+    const countryId: number = +this.route.snapshot.params['id'];
+    if (changes['country'] || changes['participations']) {
       this.forceDestroy();
       this.createChart(); // Recréez le graphique avec les nouvelles données
     }
