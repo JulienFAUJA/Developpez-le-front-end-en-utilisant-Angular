@@ -34,6 +34,7 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
     'rgb(137, 161, 219)',
   ];
   @Input() countryData: { id: number; country: string; medals: number }[] = [];
+  private SCREEN_RATIO_OFFSET:number = 49.51194184839045;
   
 
   constructor(private router: Router) {}
@@ -141,14 +142,14 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Fonction de création du Pie
    */
-  createChart() {
+  createChart():void {
     
 
     // Le this n'est plus pris dans le contexte donc le self me permet d'utiliser le routing depuis le pie
     const self = this;
     const { screen_size, label_enabled }: { screen_size: Size; label_enabled: boolean; } = this.canvas_config();
 
-    const padding_offset: number = 49.51194184839045 * screen_size.aspect_ratio;
+    const padding_offset: number = this.SCREEN_RATIO_OFFSET * screen_size.aspect_ratio;
     self.max_id=self.countryData.length;
 
     /* Mon propre plugin pour ChartJS, dans le but de positionner le texte et
@@ -208,19 +209,10 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
 
                 // Vérifier si le clic est dans l'un des textes
                 for (const position of textPositions) {
-                  if (
-                    clickX > position.x &&
-                    clickX < position.x + position.width &&
-                    clickY >= position.y - position.height &&
-                    clickY <= position.y + position.height
+                  if (clickX > position.x && clickX < position.x + position.width  &&
+                      clickY >= position.y - position.height &&  clickY <= position.y + position.height
                   ) {
-                    const page_id: number = self.countryData[position.id].id;
-                    if (page_id>self.max_id){
-                      self.router.navigateByUrl('not-found/');
-                    }
-                    else{
-                      self.router.navigateByUrl('/detail/' + page_id);
-                    }
+                    self.GoOn(self, position.id);
                     break;
                   }
                 }                    
@@ -267,17 +259,8 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
               color: 'rgb(0, 0, 0)',
             },
             onClick:function(e, legendItem, legend) {
-              
-              const ci = legend.chart;
               const index:number = legendItem.index?.valueOf() as number;
-              console.log("legend:", legendItem.text, "index:",legendItem.index,"ci:", ci, "id from ci:", ci.id);
-              const page_id: number = self.countryData[index].id;
-                    if (page_id>self.max_id){
-                      self.router.navigateByUrl('not-found/');
-                    }
-                    else{
-                      self.router.navigateByUrl('/detail/' + page_id);
-                    }
+              self.GoOn(self, index);
                     
                   }
                 },                    
@@ -311,8 +294,32 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  
+  /**
+   * Méthode de navigation
+   * @param self le this dans un contexte imbriqué
+   * @param index l'index de l'élément
+   */
+  private GoOn(self: this, index:number):void {
+    const page_id: number = self.countryData[index].id;
+    if (page_id > self.max_id) {
+      self.router.navigateByUrl('not-found/');
+    }
+    else {
+      self.router.navigateByUrl('/detail/' + page_id);
+    }
+  }
 
+  /**
+   * Méthode pour dessiner le texte
+   * @param ctx Le contexte
+   * @param texte Le texte à dessiner
+   * @param textPos La position du texte
+   * @param halfWidth La moitié de la largeur
+   * @param textWidth La largeur du texte
+   * @param index L'index de l'élément correspondant au texte
+   * @param x La position x du tooltip
+   * @param color La couleur de l'élément
+   */
   private drawText(ctx: CanvasRenderingContext2D, 
                    texte: string, 
                    textPos: Point, 
@@ -342,11 +349,13 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
   
   }
 
+
   ngOnInit(): void {
     this.forceDestroy();
     this.createChart();
   }
-  forceDestroy(){
+
+  forceDestroy():void{
     if (this.chart) {
       this.chart.destroy();
     }
