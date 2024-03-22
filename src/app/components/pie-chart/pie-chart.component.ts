@@ -39,83 +39,11 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
   constructor(private router: Router) {}
 
   /**
-   * Fonction de création du Pie
+   * Configuration du canvas pour le responsive et gestion de l'orientation de l'écran
+   * @returns Un Size contenant, la largeur, hauteur et aspect ratio de l'écran et
+   * un booléen définissant l'orientation de l'écran
    */
-  createChart() {
-    /**
-     * Positionne chaque texte à sa place par rapport à la position de son tooltip
-     * mais prend en compte les éléments suivants pour gérer le responsive:
-     * sa position (du tooltip) par rapport aux moitié width et height.
-     * @param index L'index de l'élément dans le dataset
-     * @param tooltipPoint Le tooltip de l'élément
-     * @param halfWidth La moitié de la largeur
-     * @param halfHeight La moitié de la hauteur
-     * @param rectBox La box du contenu
-     * @returns La position du texte actuel
-     */
-    function set_text_position(
-      index: number,
-      tooltipPoint: Point,
-      halfWidth: number,
-      halfHeight: number,
-      rectBox: RectBox
-    ): Point {
-      const left_half: boolean = tooltipPoint.x < halfWidth ? true : false;
-      const upper_half: boolean = tooltipPoint.y < halfHeight ? true : false;
-      let text_x: number;
-      let text_y: number;
-      const offset_value: number = 15;
-      let offset_x: number = index % 2 == 0 ? -offset_value : offset_value;
-
-      if (left_half === true) {
-        if (index === 0 || index === 1) text_x = halfWidth + offset_x;
-        else text_x = halfWidth / 3 + offset_x;
-      } else {
-        if (index <= 2) {
-          text_x =
-            rectBox.right - Math.abs(rectBox.right - halfWidth) / 3 + offset_x;
-        } else {
-          text_x = halfWidth / 4 + offset_x;
-        }
-      }
-      if (upper_half === true) {
-        if (index === 0) {
-          text_y = rectBox.top + 10;
-        } else if (index === 1) {
-          text_y = tooltipPoint.y - 10;
-        } else {
-          text_y = tooltipPoint.y - 30;
-        }
-      } else {
-        switch (index) {
-          case 0:
-            text_y = tooltipPoint.y - 15;
-            break;
-          case 1:
-            text_y = tooltipPoint.y - 10;
-            break;
-          case 2:
-            text_y =
-              rectBox.bottom -
-              Math.abs(rectBox.bottom - tooltipPoint.y) / 2 +
-              5;
-            break;
-          case 3:
-            text_y = tooltipPoint.y;
-            break;
-          default:
-            text_y = tooltipPoint.y - 15;
-            break;
-        }
-      }
-      return {
-        x: text_x,
-        y: text_y,
-      } as Point;
-    }
-
-    // Le this n'est plus pris dans le contexte donc le self me permet d'utiliser le routing depuis le pie
-    const self = this;
+  private canvas_config():{ screen_size: Size; label_enabled: boolean; } {
     const canvas: HTMLCanvasElement | null = document.querySelector('canvas');
     // L'orientation de l'écran
     const orientation: ScreenOrientation = window.screen.orientation;
@@ -125,14 +53,12 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
     // J'y remédie alors dans le IF suivant
     const height_ratio: number = 0.8;
     const new_height: number = window.screen.availHeight * height_ratio;
-    const width_label:string = "width";
-    const height_label:string = "height";
+    const width_label: string = "width";
+    const height_label: string = "height";
     const laptop: Size1 = { width: 1366, height: 768 };
-    if (
-      orientation.type === 'portrait-primary' &&
+    if (orientation.type === 'portrait-primary' &&
       window.screen.availHeight !== laptop.height &&
-      window.screen.availWidth !== laptop.width
-    ) {
+      window.screen.availWidth !== laptop.width) {
       canvas?.setAttribute(width_label, window.screen.availWidth.toString());
       canvas?.setAttribute(height_label, new_height.toString());
       label_enabled = true;
@@ -149,6 +75,78 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
       height: screen.height,
       aspect_ratio: screen.width / screen.height,
     };
+    return { screen_size, label_enabled };
+  }
+
+  /**
+     * Positionne chaque texte à sa place par rapport à la position de son tooltip
+     * mais prend en compte les éléments suivants pour gérer le responsive:
+     * sa position (du tooltip) par rapport aux moitié width et height.
+     * @param index L'index de l'élément dans le dataset
+     * @param tooltipPoint Le tooltip de l'élément
+     * @param halfWidth La moitié de la largeur
+     * @param halfHeight La moitié de la hauteur
+     * @param rectBox La box du contenu
+     * @returns La position du texte actuel
+     */
+  set_text_position(index: number, tooltipPoint: Point, halfWidth: number, halfHeight: number, rectBox: RectBox): Point {
+    const left_half: boolean = tooltipPoint.x < halfWidth ? true : false;
+    const upper_half: boolean = tooltipPoint.y < halfHeight ? true : false;
+    let text_x: number;
+    let text_y: number;
+    const offset_value: number = 15;
+    let offset_x: number = index % 2 == 0 ? -offset_value : offset_value;
+
+    if (left_half === true) {
+      if (index === 0 || index === 1) text_x = halfWidth + offset_x;
+      else text_x = halfWidth / 3 + offset_x;
+    } else {
+      if (index <= 2) {
+        text_x = rectBox.right - Math.abs(rectBox.right - halfWidth) / 3 + offset_x;
+      } else {
+        text_x = halfWidth / 4 + offset_x;
+      }
+    }
+    if (upper_half === true) {
+      if (index === 0) {
+        text_y = rectBox.top + 10;
+      } else if (index === 1) {
+        text_y = tooltipPoint.y - 10;
+      } else {
+        text_y = tooltipPoint.y - 30;
+      }
+    } else {
+      switch (index) {
+        case 0:
+          text_y = tooltipPoint.y - 15;
+          break;
+        case 1:
+          text_y = tooltipPoint.y - 10;
+          break;
+        case 2:
+          text_y =
+            rectBox.bottom - Math.abs(rectBox.bottom - tooltipPoint.y) / 2 + 5;
+          break;
+        case 3:
+          text_y = tooltipPoint.y;
+          break;
+        default:
+          text_y = tooltipPoint.y - 15;
+          break;
+      }
+    }
+    return {x: text_x, y: text_y} as Point;
+  }
+
+  /**
+   * Fonction de création du Pie
+   */
+  createChart() {
+    
+
+    // Le this n'est plus pris dans le contexte donc le self me permet d'utiliser le routing depuis le pie
+    const self = this;
+    const { screen_size, label_enabled }: { screen_size: Size; label_enabled: boolean; } = this.canvas_config();
 
     const padding_offset: number = 49.51194184839045 * screen_size.aspect_ratio;
     self.max_id=self.countryData.length;
@@ -183,34 +181,12 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
               const halfWidth: number = width / 2;
               const halfHeight: number = height / 2;
               const texte = chart.data.labels?.at(index) as string;
-              const textPos: Point = set_text_position(
-                index,
-                tooltipPoint,
-                halfWidth,
-                halfHeight,
-                rectBox
-              );
+              const textPos: Point = self.set_text_position(index, tooltipPoint, halfWidth, halfHeight, rectBox);
 
               const color = dataset.backgroundColor as string[];
               ctx.fillStyle = color[index];
-
-              ctx.beginPath();
               const textWidth: TextMetrics = ctx.measureText(texte);
-
-              ctx.font = '18px Arial';
-              ctx.fillStyle = 'black';
-              const line_offset_x: number =
-                textPos.x > halfWidth ? 0 : textWidth.width;
-              const y_offset: number = 5;
-              ctx.moveTo(textPos.x + line_offset_x, textPos.y - y_offset);
-              const offset_val: number = 5;
-              const x_offset: number = index < 3 ? offset_val : -offset_val;
-
-              ctx.lineTo(x + x_offset, textPos.y - y_offset);
-              ctx.strokeStyle = color[index];
-              ctx.stroke();
-
-              ctx.fillText(texte, textPos.x, textPos.y);
+              self.drawText(ctx, texte, textPos, halfWidth, textWidth,index, x, color);
 
               // Ajouter la position du texte à l'ensemble
               const position: TextPosition = {
@@ -290,7 +266,24 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
             labels: {
               color: 'rgb(0, 0, 0)',
             },
-          },
+            onClick:function(e, legendItem, legend) {
+              
+              const ci = legend.chart;
+              const index:number = legendItem.index?.valueOf() as number;
+              console.log("legend:", legendItem.text, "index:",legendItem.index,"ci:", ci, "id from ci:", ci.id);
+              const page_id: number = self.countryData[index].id;
+                    if (page_id>self.max_id){
+                      self.router.navigateByUrl('not-found/');
+                    }
+                    else{
+                      self.router.navigateByUrl('/detail/' + page_id);
+                    }
+                    
+                  }
+                },                    
+                   
+        
+        
           tooltip: {
             enabled: true, // Active les tooltips
             backgroundColor: 'rgb(4, 131, 143)', // Fond des tooltips
@@ -316,6 +309,37 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
         },
       },
     });
+  }
+
+  
+
+  private drawText(ctx: CanvasRenderingContext2D, 
+                   texte: string, 
+                   textPos: Point, 
+                   halfWidth: number, 
+                   textWidth: TextMetrics, 
+                   index: number, 
+                   x: number, 
+                   color: string[]):void {
+
+    ctx.beginPath();
+    
+
+    ctx.font = '18px Arial';
+    ctx.fillStyle = 'black';
+    const line_offset_x: number = textPos.x > halfWidth ? 0 : textWidth.width;
+    const y_offset: number = 5;
+    ctx.moveTo(textPos.x + line_offset_x, textPos.y - y_offset);
+    const offset_val: number = 5;
+    const x_offset: number = index < 3 ? offset_val : -offset_val;
+
+    ctx.lineTo(x + x_offset, textPos.y - y_offset);
+    ctx.strokeStyle = color[index];
+    ctx.stroke();
+
+    ctx.fillText(texte, textPos.x, textPos.y);
+    ctx.closePath();
+  
   }
 
   ngOnInit(): void {
