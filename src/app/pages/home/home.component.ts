@@ -10,10 +10,14 @@ import { OlympicService } from 'src/app/core/services/olympic.service';
 })
 export class HomeComponent implements OnInit {
   public olympics$!: Observable<Olympic[]>;
-  numberOfCountries!: number;
-  listOfCountries!: string[];
-  totalJO!: number;
-  totalMedalsByCountry: { id: number; country: string; medals: number }[] = [];
+  public numberOfCountries!: number;
+  public listOfCountries!: string[];
+  public totalJO!: number;
+  public totalMedalsByCountry: {
+    id: number;
+    country: string;
+    medals: number;
+  }[] = [];
   private ngUnsubscribe = new Subject<boolean>();
 
   constructor(private olympicService: OlympicService) {}
@@ -26,7 +30,7 @@ export class HomeComponent implements OnInit {
       .subscribe((data: Olympic[]) => {
         this.numberOfCountries = data.length; // Nombre de pays
 
-        this.listOfCountries = data.map((country) => country.country); // Liste des pays
+        //this.listOfCountries = data.map((country) => country.country); // Liste des pays
 
         // Pour le nombre total de JO, on doit compter toutes les participations uniques
         this.totalJO = new Set(

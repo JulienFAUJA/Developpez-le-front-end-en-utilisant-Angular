@@ -8,7 +8,7 @@ import { Olympic } from '../models/Olympic';
   providedIn: 'root',
 })
 export class OlympicService {
-  private olympicUrl:string = './assets/mock/olympic.json';
+  private olympicUrl: string = './assets/mock/olympic.json';
   private olympics$ = new BehaviorSubject<Olympic[]>([]);
 
   constructor(private http: HttpClient) {}
@@ -16,7 +16,7 @@ export class OlympicService {
   // Charge les données initiales
   loadInitialData(): Observable<Olympic[]> {
     return this.http.get<Olympic[]>(this.olympicUrl).pipe(
-      tap((olympics) => this.olympics$.next(olympics)),
+      tap((olympics) => this.getDistinctOlympics(olympics)),
       catchError((error) => {
         console.error(error);
         this.olympics$.next([]); // Réinitialise les données en cas d'erreur
@@ -26,15 +26,29 @@ export class OlympicService {
   }
 
   // Obtient les données olympiques
-  getOlympics(): Observable<Olympic[]> {
+  public getOlympics(): Observable<Olympic[]> {
     return this.olympics$.asObservable();
   }
 
-  // Méthode pour obtenir le nombre d'éléments de premier niveau dans les données olympiques
-  getNumberOfOlympicItems(): Observable<number> {
-    return this.olympics$.pipe(
-      map((olympics) => olympics.length)
+  public getOlympicById(id: number): Observable<boolean> {
+    return this.getOlympics().pipe(
+      map((olympics) => olympics.some((olympic) => olympic.id === id))
     );
   }
 
+  public getDistinctOlympics(olympics: Olympic[]): void {
+    let countries_void = new Set<string>();
+    this.olympics$.next(
+      olympics.filter(
+        (olympic) =>
+          !countries_void.has(olympic.country) &&
+          countries_void.add(olympic.country)
+      )
+    );
+  }
+
+  // Méthode pour obtenir le nombre d'éléments de premier niveau dans les données olympiques
+  public getNumberOfOlympicItems(): Observable<number> {
+    return this.olympics$.pipe(map((olympics) => olympics.length));
+  }
 }

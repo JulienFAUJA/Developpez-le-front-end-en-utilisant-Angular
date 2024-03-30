@@ -14,6 +14,8 @@ import { TextPosition } from 'src/app/core/models/TextPosition';
 import { Point } from 'src/app/core/models/Point';
 import { Size, Size1 } from 'src/app/core/models/Size';
 import { RectBox } from 'src/app/core/models/RectBox';
+import { OlympicService } from 'src/app/core/services/olympic.service';
+import { Subscription } from 'rxjs';
 
 Chart.register(ChartDataLabels);
 
@@ -37,7 +39,7 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
   private SCREEN_RATIO_OFFSET:number = 49.51194184839045;
   
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private olympicService: OlympicService) {}
 
   /**
    * Configuration du canvas pour le responsive et gestion de l'orientation de l'écran
@@ -301,15 +303,18 @@ export class PieChartComponent implements OnInit, OnChanges, OnDestroy {
    */
   private GoOn(self: this, index:number):void {
     const page_id: number = self.countryData[index].id;
-    if (page_id > self.max_id) {
-      self.router.navigateByUrl('not-found/');
-    }
-    else {
-      self.router.navigateByUrl('/detail/' + page_id);
-    }
+    const val:Subscription = self.olympicService.getOlympicById(page_id).subscribe(
+      data => {
+       data===true ? 
+      self.router.navigateByUrl('/detail/' + page_id) : self.router.navigateByUrl('not-found/');
+      val.unsubscribe();
+      }
+      );
+      
+      
   }
 
-  /**
+  /** 
    * Méthode pour dessiner le texte
    * @param ctx Le contexte
    * @param texte Le texte à dessiner

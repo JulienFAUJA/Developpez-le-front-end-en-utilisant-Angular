@@ -40,10 +40,7 @@ export class DetailComponent implements OnInit, OnDestroy {
           this.len = numItems;
         });
         if (
-          (this.len &&
-            this.len > 0 &&
-            (countryId > this.len || countryId === 0)) ||
-          isNaN(countryId)
+          (this.len && this.len > 0 &&  (countryId > this.len || countryId === 0)) || isNaN(countryId)
         ) {
           this.goTo(countryId);
         }
